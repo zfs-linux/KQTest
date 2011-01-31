@@ -1,1 +1,11 @@
 This is the python test harness for ZFS
+
+you need to use python 2.7.1 or higher. The source code of pythone-2.7.1
+is included here.
+
+It is recomended you configure python as
+
+./configure --prefix=/opt/python-2.7.1
+
+And then do the remaining make steps.
+
