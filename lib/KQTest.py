@@ -29,6 +29,27 @@ cmdzfs   = "zfs"
 # devnull file for all our commands
 devnull = open("/dev/null","rw")
 
+#####
+## Global helper functions
+#####
+
+# Get the infomation about all our resources
+def getResources():
+    if globals()["allResources"] is None: 
+        raise Exception("Resources Not Initialized")
+    return allResources
+
+
+def unmountAll():
+    ret = subprocess.call([cmdzfs, "umount", "-a"], stdin=devnull, \
+                              stdout=devnull,stderr=devnull)
+    if ret != 0:
+        raise Exception("Failed to unmount")
+
+def commonSetup(logid):
+    print logid
+    pass
+
 class disk():
     """This is an abstaraction for a disk"""
 
@@ -180,7 +201,7 @@ class zpool():
         self.fslist = []
         self.name = name
         self.mountpoint = "/"+name
-#        self.fslist = fs()
+        self.poolfs = False # should be of type fs
 
     def __del__(self):
         self.destroy()
@@ -197,10 +218,17 @@ class zpool():
             raise Exception("Failed to create pool")
         self.created = True
         self.host.pooladd(self)
+        self.poolfs = fs(self, self.name, self.mountpoint)
+        self.fslist.append(self.poolfs)
+        return self.poolfs
+        
 
     def destroy(self):
         if not self.created:
             raise Exception("Pool not created can't destroy")
+        if len(self.fslist) != 1:
+            raise Exception("Children exist")
+
         # TODO store the stdout and stderr for output in case of error
         ret = subprocess.call([cmdzpool, "destroy", self.name], stdin=devnull, \
                                   stdout=devnull,stderr=devnull)
@@ -211,17 +239,20 @@ class zpool():
         # TODO must handle mirror later
         return self.disklist
 
-    def unmountAll(self):
-        ret = subprocess.call([cmdzfs, "umount", "-a"], stdin=devnull, \
-                                  stdout=devnull,stderr=devnull)
-        if ret != 0:
-            raise Exception("Failed to unmount")
+
         
 class fs():
     "A filesystem"
-    def __init__(self, pool, mntpt):
+    def __init__(self, pool, name, mntpt):
+       self.pool = pool # pool containing this fs
+       self.mntpt = mntpt # where it is mounted
+       self.name = name
+
+    def create(self):
         pass
 
+    def destroy(self):
+        pass
 
 class zvol():
     "A zvol"
@@ -251,16 +282,17 @@ class buildSetup():
 
     def load(self):
         self.unload(False)
+        print buildDir
         res = map(subprocess.call, map((lambda x:["insmod", buildDir+x ]), moduleLoadList))
         if len(res) != res.count(0):
             raise Exception("insmod of zfs modules failed")
 
     def unload(self, check = True):
         if check:
-            res = map(subprocess.call, map((lambda x:["rmmod", buildDir+x]), moduleUnloadList))
+            res = map(subprocess.call, map((lambda x:["rmmod", x]), moduleUnloadList))
         else:
             res = map((lambda x:subprocess.call(x,stdin=None, stdout=devnull, stderr=devnull)), \
-                           map((lambda x:["rmmod", buildDir+x]), moduleUnloadList))
+                           map((lambda x:["rmmod", x]), moduleUnloadList))
         if check and (len(res) != res.count(0)):
             raise Exception("error unloading zfs modules")
         

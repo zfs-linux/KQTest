@@ -5,13 +5,14 @@ from lib.KQTest import *
 class TestSequenceFunctions(unittest.TestCase):
 
     def setUp(self):
+        commonSetup(self.id())
         self.host = getResources().getHost()
         self.d1 = self.host.getDisk()
         self.tank = self.host.pool("tank", self.d1)
         self.seq = range(10)
 
     def tearDown(self):
-        self.tank.unmountAll()
+        unmountAll()
         self.tank.destroy()
         self.host.putDisk(self.d1)
         getResources().putHost(self.host)
