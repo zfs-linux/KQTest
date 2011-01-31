@@ -9,3 +9,7 @@ It is recomended you configure python as
 
 And then do the remaining make steps.
 
+To run KQI zfs test harness, first you need to confiure test harness.
+Confiuration file is located at $ZFS_TH_HOME/ZFS.TH.CONFIG .
+Be careful while setting configuration data, wrong configuration might crash
+your system or loose your data.
