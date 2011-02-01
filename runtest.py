@@ -10,9 +10,7 @@ and to run the test cases"""
 # load zfs test harness configuration settings
 
 ZFS_TH_CONFIG_FILE = 'ZFS.TH.CONFIG'
-ZFS_TH_CONFIG      = {"DEVICELIST":"",
-                      "BUILDROOT":""
-                     }
+
 # read Configuration file to get config data     
 try :
     fd = open(ZFS_TH_CONFIG_FILE)
@@ -20,21 +18,16 @@ try :
     fd.close()
     sdata = data.split('\n')
     for i in sdata:
-        ZFS_TH_CONFIG[i.split('=')[0]] = i.split('=')[1]
+        globals()[i.split('=')[0]] = i.split('=')[1]
 except :
-    print 
+    print "Error reading config file"
 
-ZFS_TH_CONFIG['DEVICELIST'] = ZFS_TH_CONFIG['DEVICELIST'].split()
+# The device list must be a list not a string of device names
+
+DEVICELIST = DEVICELIST.split()
 
 # done config read
-
  
-# All the test setup specific detail are in this section. you will
-# need to modify this for your test to work correctly.
-
-DEVICELIST = ZFS_TH_CONFIG['DEVICELIST'] 
-BUILDROOT  = ZFS_TH_CONFIG['BUILDROOT'] 
-
 
 ###########################
 ## end of config section ##
@@ -47,7 +40,7 @@ from lib.KQTest import *
 
 
 # set path to build
-bu = buildSetup(BUILDROOT)
+bu = buildSetup(BUILDROOT, globals())
 bu.load()
 
 res = resources(host(map(disk, DEVICELIST)))

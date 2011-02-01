@@ -2,6 +2,9 @@
     structure in a filesystem test suite"""
 
 import subprocess
+import unittest
+import threading
+import os
 
 #####
 ## Globals used in this modules
@@ -17,6 +20,10 @@ moduleLoadList = ["/spl/module/spl/spl.ko", "/spl/module/splat/splat.ko", "/zfs/
 
 # while unloading you don't need the entire path name just the module name
 moduleUnloadList = ["lzfs", "zfs", "zunicode", "zcommon", "zavl", "znvpair", "splat", "spl"]
+
+# per Thread local store
+threadLocal = threading.local()
+
 
 # Global Anchor for all the resources
 allResources = None
@@ -47,9 +54,30 @@ def unmountAll():
         raise Exception("Failed to unmount")
 
 def commonSetup(logid):
-    print logid
-    pass
+    threadLocal.testId = logid
+    threadLocal.logfile = LOGDIR+"/"+logid
+    open(threadLocal.logfile, 'w') # truncate file TODO do properly
+    threadLocal.logfd = open(threadLocal.logfile, 'a')
+    subprocess.call(["dmesg","-c"], stdout=devnull,stderr=devnull)
 
+def printLog(msg):
+    threadLocal.logfd.write(msg)
+    threadLocal.logfd.flush()
+
+
+def cmdLog(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0, dmesg=True):
+    stdin=devnull
+    logfd = threadLocal.logfd
+    stdout=logfd
+    stderr=logfd
+    printLog(" ".join(args) +"\n")
+    ret = subprocess.call(args, bufsize, executable, stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd, env, universal_newlines, startupinfo, creationflags)
+    if dmesg:
+        printLog("======= dmesg start ======\n")
+        cmdLog(["dmesg","-c"], dmesg=False)
+        printLog("======= dmesg end ======\n")
+    return ret
+        
 class disk():
     """This is an abstaraction for a disk"""
 
@@ -129,12 +157,21 @@ class host():
         self.diskused = []    # tracks currently used disks
         self.diskfree = list(dlist) # tracks currently free disks
         self.poollist = []
+        alldisks=self.getDisk(self.getNumFreeDisks())
+        pool = self.pool("clear", alldisks, force=True)
+        unmountAll()
+        self.putDisk(pool.destroy())
 
     # destroy pools
     def __del__(self):
         for i in self.poolist:
             if i.created:
                  i.destroy()
+
+    # Get number of disks
+    def getNumFreeDisks(self):
+        return len(self.diskfree)
+
 
     # Get free disk for use in the host    
     def getDisk(self, num=1):
@@ -174,9 +211,9 @@ class host():
             return True
 
     # Create a pool
-    def pool(self, name,  dlist):
+    def pool(self, name,  dlist, force=False):
         tank = zpool(self, name, dlist)
-        tank.create()
+        tank.create(force)
         return tank
         
     def pooladd(self, pool):
@@ -206,14 +243,21 @@ class zpool():
     def __del__(self):
         self.destroy()
     
+        
+    def getFs(self):
+        return self.poolfs 
 
     # create a the pool 
-    def create(self):
+    def create(self, force=False):
         dl = []
+        options = []
+        if force:
+            options.append("-f")
         for i in self.disklist:
             dl.append(i.diskname)
         # TODO store the stdout and stderr for output in case of error
-        ret = subprocess.call([cmdzpool, "create"]+[self.name]+dl, stdin=devnull, stdout=devnull,stderr=devnull)
+#        ret = subprocess.call([cmdzpool, "create"]+options+[self.name]+dl, stdin=devnull, stdout=devnull,stderr=devnull)
+        ret = cmdLog([cmdzpool, "create"]+options+[self.name]+dl, stdin=devnull, stdout=devnull,stderr=devnull)
         if ret != 0:
             raise Exception("Failed to create pool")
         self.created = True
@@ -230,8 +274,10 @@ class zpool():
             raise Exception("Children exist")
 
         # TODO store the stdout and stderr for output in case of error
-        ret = subprocess.call([cmdzpool, "destroy", self.name], stdin=devnull, \
+        ret = cmdLog([cmdzpool, "destroy", self.name], stdin=devnull, \
                                   stdout=devnull,stderr=devnull)
+        # ret = subprocess.call([cmdzpool, "destroy", self.name], stdin=devnull, \
+        #                           stdout=devnull,stderr=devnull)
         if ret != 0:
             raise Exception("Failed to create pool")
         self.created = False
@@ -243,10 +289,27 @@ class zpool():
         
 class fs():
     "A filesystem"
-    def __init__(self, pool, name, mntpt):
+    def __init__(self, pool, name, mntpt, snap=False, clone=False, mounted=True):
        self.pool = pool # pool containing this fs
+       if mntpt[-1] != "/":
+           mntpt = str(mntpt)+"/"
        self.mntpt = mntpt # where it is mounted
        self.name = name
+       self.snap = snap
+       self.clone = clone
+       self.mounted = True
+
+    def snapshot(name):
+        ret = cmdLog([cmdzfs, "snapshot", self.name + "@" + name])
+        if ret != 0:
+            raise Exception("can't create snapshot")
+        #mount the snapshot
+        ret = cmdLog(["ls", self.mntpt +".zfs/snapshot/"+name])
+        if ret != 0:
+            raise Exception("can't mount snapshot")
+        return fs(self.pool, self.name + "@" + name, self.mntpt +".zfs/snapshot/"+name, snap=True)
+        
+        
 
     def create(self):
         pass
@@ -269,7 +332,11 @@ class cmds():
     
 class buildSetup():
     "subroutines to load unload modules, and check them"
-    def __init__(self, buildpath):
+    def __init__(self, buildpath, glob):
+        # copy the config globals set in the main file
+        for i in glob.keys():
+            globals()[i] = glob[i]
+        commonSetup("resources-setup")
         self.unloadAlways = True # load-unload modules after each test
                                  # to check for leaks
         # make sure we pick up the correct commands
@@ -279,7 +346,7 @@ class buildSetup():
             globals()["buildDir"] = buildpath
             cmdzpool = buildpath + "/zfs/cmd/zpool/zpool"
             cmdzfs = buildpath + "/zfs/cmd/zfs/zfs"
-
+    
     def load(self):
         self.unload(False)
         print buildDir
@@ -296,3 +363,4 @@ class buildSetup():
         if check and (len(res) != res.count(0)):
             raise Exception("error unloading zfs modules")
         
+
