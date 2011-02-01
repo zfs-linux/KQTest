@@ -72,6 +72,7 @@ def cmdLog(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=Non
     stderr=logfd
     printLog(" ".join(args) +"\n")
     ret = subprocess.call(args, bufsize, executable, stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd, env, universal_newlines, startupinfo, creationflags)
+    printLog("ret: "+str(ret)+"\n")
     if dmesg:
         printLog("======= dmesg start ======\n")
         cmdLog(["dmesg","-c"], dmesg=False)
@@ -118,6 +119,12 @@ class resources():
         if "allResources" not in globals():
             globals()["allResources"] = self
         globals()["allResources"] = self
+
+    def cleanup(self):
+        li = list(self.__class__.hostUsed)
+        li.reverse()
+        for i in li:
+            i.cleanup()
         
     def getHost(self):
         e = self.__class__.hostFree.pop()
@@ -167,6 +174,14 @@ class host():
         for i in self.poolist:
             if i.created:
                  i.destroy()
+
+    def cleanup(self):
+        li = list(self.poollist)
+        li.reverse()
+        for i in li:
+            i.cleanup()
+            li = i.destroy()
+            self.putDisk(li)
 
     # Get number of disks
     def getNumFreeDisks(self):
@@ -242,7 +257,13 @@ class zpool():
 
     def __del__(self):
         self.destroy()
-    
+
+    def cleanup(self):
+        li = list(self.fslist)
+        li.reverse()
+        for i in li:
+            i.unmount()
+            i.destroy()
         
     def getFs(self):
         return self.poolfs 
@@ -262,16 +283,15 @@ class zpool():
             raise Exception("Failed to create pool")
         self.created = True
         self.host.pooladd(self)
-        self.poolfs = fs(self, self.name, self.mountpoint)
-        self.fslist.append(self.poolfs)
+        self.poolfs = fs(self, self.name, self.mountpoint, isPool=True)
         return self.poolfs
         
 
     def destroy(self):
         if not self.created:
             raise Exception("Pool not created can't destroy")
-        if len(self.fslist) != 1:
-            raise Exception("Children exist")
+        if len(self.fslist) > 0:
+            raise Exception("Children exist" + self.fslist[0].name)
 
         # TODO store the stdout and stderr for output in case of error
         ret = cmdLog([cmdzpool, "destroy", self.name], stdin=devnull, \
@@ -289,7 +309,7 @@ class zpool():
         
 class fs():
     "A filesystem"
-    def __init__(self, pool, name, mntpt, snap=False, clone=False, mounted=True):
+    def __init__(self, pool, name, mntpt, isPool=False, snap=False, clone=False, mounted=True):
        self.pool = pool # pool containing this fs
        if mntpt[-1] != "/":
            mntpt = str(mntpt)+"/"
@@ -298,8 +318,30 @@ class fs():
        self.snap = snap
        self.clone = clone
        self.mounted = True
+       self.isPool = pool # if this is the pool
+       if not isPool:
+           pool.fslist.append(self)
 
-    def snapshot(name):
+
+    def destroy(self):
+        if not self.isPool:
+            ret = cmdLog([cmdzfs, "destroy", self.name])
+        self.pool.fslist.remove(self)
+        return 0
+
+    def mount(self):
+        cmdLog([cmdzfs, "mount", self.name])
+        if ret != 0:
+            raise Exception("can't destroy fs")
+
+    def unmount(self):
+        if self.snap:
+            cmdLog(["umount",self.mntpt])
+        else:
+            cmdLog([cmdzfs, "unmount", self.name])
+
+
+    def snapshot(self, name):
         ret = cmdLog([cmdzfs, "snapshot", self.name + "@" + name])
         if ret != 0:
             raise Exception("can't create snapshot")
@@ -309,13 +351,9 @@ class fs():
             raise Exception("can't mount snapshot")
         return fs(self.pool, self.name + "@" + name, self.mntpt +".zfs/snapshot/"+name, snap=True)
         
-        
-
     def create(self):
         pass
 
-    def destroy(self):
-        pass
 
 class zvol():
     "A zvol"
@@ -349,7 +387,6 @@ class buildSetup():
     
     def load(self):
         self.unload(False)
-        print buildDir
         res = map(subprocess.call, map((lambda x:["insmod", buildDir+x ]), moduleLoadList))
         if len(res) != res.count(0):
             raise Exception("insmod of zfs modules failed")

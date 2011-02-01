@@ -44,7 +44,8 @@ bu = buildSetup(BUILDROOT, globals())
 bu.load()
 
 res = resources(host(map(disk, DEVICELIST)))
-suite = unittest.TestLoader().discover("test", "*.py", "test")
+loader = unittest.TestLoader()
+suite = loader.discover("test", "*.py")
 unittest.TextTestRunner(verbosity=2).run(suite)
 print "finished"
 

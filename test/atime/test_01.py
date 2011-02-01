@@ -3,7 +3,7 @@ import unittest
 from lib.KQTest import *
 import threading
 
-class atime_pos(unittest.TestCase):
+class test_atime_pos(unittest.TestCase):
 
     def setUp(self):
         commonSetup(self.id())
@@ -14,10 +14,8 @@ class atime_pos(unittest.TestCase):
         
 
     def tearDown(self):
-        unmountAll()
-        self.tank.destroy()
-        self.host.putDisk(self.d1)
+        getResources().cleanup()
         getResources().putHost(self.host)
 
-    def atime-01(self):
-        
+    def test_atime_01(self):
+        snap = self.fs.snapshot("snap")
