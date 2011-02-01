@@ -1,0 +1,151 @@
+NAME
+    iotest - Write Read & Verify
+
+SYNOPSIS
+    iotest [/path/to/file] [-oiVwryxqtPFfkTvsS]
+
+
+DESCRIPTION
+    Shared command line arguments and their descriptions are as follows:
+    
+    -o|--output  [/path/to/filename|-]
+     Use the output specification to explicitly define a destination for writing.
+        
+    If output is specified as '-', the contents of the file are piped to stdout.
+    Direct and mmap I/O methods are not supported. Random sequence is also not
+    supported.More than one threads are not supported.
+        
+    -i|--input   [/path/to/filename|-]
+    Use the input specification to explicitly define a source for reading.
+        
+    If input is specified as '-', the contents of the file are piped from stdin.
+    Direct and mmap I/O methods are not supported. Random sequence is also not
+        supported. More than one threads are not supported.
+        
+    -V|--verify
+
+    Enable or disable the verification of data.
+    Verification implies that the same data is read back which was written
+    earlier.
+        
+    -w|--write [offset=],[count=],[iosize=],[miniosize=],[maxiosize=],[size=],
+               [sleep=],[minsleep=],[maxsleep]
+        offset - Starting offset for the I/O operations.(In Bytes,Default 0)
+             count  - Number of I/O operations.
+        iosize - Block size of the operations.(In Bytes)
+        miniosize - Lower limit for block size while using random iosize.
+        maxiosize - Upper limit for block size while using random iosize.
+        size   - Total size of the I/O operations.(In Bytes)
+        sleep  - Sleep between each I/O operation.(In seconds)
+        minsleep - Lower limit for sleep while using random sleep interval.
+        maxsleep - Upper limit for sleep while using random sleep interval.
+        
+        iosize is equal to block of the data which will be written in one operation.
+        
+    -r|--read [offset=],[count=],[iosize=],[miniosize=],[maxiosize=],[size=],
+               [sleep=],[minsleep=],[maxsleep]
+        offset - Starting offset for the I/O operations(Default 0).
+        count  - Number of I/O operations.
+        iosize - Block size of the operations.
+        miniosize - Lower limit for block size while using random iosize.
+        maxiosize - Upper limit for block size while using random iosize.
+        size   - Total size of the I/O operations.
+        sleep  - Sleep between each I/O operation.(In Milli-seconds)
+        minsleep - Lower limit for sleep while using random sleep interval.
+        maxsleep - Upper limit for sleep while using random sleep interval.
+        
+         iosize is equal to block of the data which will be read in one operation.
+        
+    -y|--writethreads [count]
+    Number of threads to write data. (Default 1, Max 16)
+
+    -x|--readthreads [count]
+    Number of threads to read data.  (Default 1, Max 16)
+
+    -q|--sequence [seq|random]
+        Use the sequence argument to define whether data is written/read in a
+        random (which requires forward and backward seeks) or non-random manner.
+        (Default seq).
+
+    -t|--type [sparse|non-sparse]
+    Use the type argument to specify whether file is sparse or not.
+    (Default non-sparse)
+        
+    -P|--pattern [string]
+    Data-pattern to use in the writing and reading/verification of data.
+
+    -F|--Pattern [filename]
+    Data-pattern to use in the writing and reading/verification of data.
+
+    If neither -P nor -F option is specified, "0123456789" will be used
+    as default pattern.
+                
+    -f|--rflags  [options]
+    Use the rflags argument to specify I/O method for reading.
+    mmap        Memory Mapped I/O (Default I/O method)
+    directio    Direct I/O
+    bufferedio  Buffered I/O
+
+    -k|--wflags  [options]
+    Use the wflags argument to specify I/O method for writing.
+    mmap        Memory Mapped I/O (Default I/O method)
+    directio    Direct I/O
+    bufferedio  Buffered I/O
+        
+    -T|--timeout seconds
+    To specify the allowed run time for the iotest tool.If the execution does not
+    finish within the specified timeout value, the tool will exit with error.
+    (Default -1 (No timeout))
+
+    Timeout has optional floating-point (millisecond) precision.
+    e.g. 2.4
+        
+    -v|-vv|--verbose [verbosity]
+     Use the verbose flag to increase the information displayed for any I/O
+     operation.
+        
+    -s|--sparseness [factor]
+        Define the sparseness factor to be used (Default 1).
+        
+    For example if the count is 10, iosize is 4096 and sparseness factor is 2;
+    the file of the size created will be 81920.This parameter will be used if
+    the --type argument says sparse. In case of non-sparse the argument will be
+    ignored and rejected if    value is greater than 1
+     
+    -S|--seed [value]
+        Define the seed value to be used for pseudo-random function (Default 0).
+
+    -n|--nice [value]
+        Specify the nice value to change the scheduling priority of the process.
+
+EXPECTED OUTPUT
+
+Total Time                :
+Total Write/Read Size     :
+Average Write Speed       :
+Average Read Speed        :
+Average Write Latency     :
+Average Read Latency      :
+Good/Bad Verification     :
+
+RETURN VALUE
+        0         when program finishes successfully.
+        -1        when opening a file fails.
+        ENOMEM=12 when allocation for requested memory fails.
+        ESPIPE=29 when lseek fails.
+        EINVAL=22 when Invalid argument passed.
+        EACCES=13 when permission is denied for the requested operation.
+
+Data Corruption:
+        If there is corruption in an IO block, it will be reported in a
+        corruption log file,
+        
+        with details in format:-
+        First 8 bytes of the corruption, followed by "..", followed by the last
+        8 bytes of the corruption, followed by a list of the starting and ending
+        offsets of the corruption.
+        For example:-
+        12345678..90ABCDEF (start,end)
+
+        The name of the file will be corruption_log_<PID> to keep it it unique.
+        PID is the process-id of the process.
