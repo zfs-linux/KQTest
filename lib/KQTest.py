@@ -61,9 +61,23 @@ def commonSetup(logid):
     subprocess.call(["dmesg","-c"], stdout=devnull,stderr=devnull)
 
 def printLog(msg):
+    if len(msg) != 0 and msg[-1] != '\n':
+        msg +="\n"
     threadLocal.logfd.write(msg)
     threadLocal.logfd.flush()
 
+def cmdQuery(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0, dmesg=True):
+    logfd = threadLocal.logfd
+    stdin = devnull
+    stdout = subprocess.PIPE
+    stderr = subprocess.PIPE
+    printLog(" ".join(args) +"\n")
+    proc = subprocess.Popen(args, bufsize, executable, stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd, env, universal_newlines, startupinfo, creationflags)
+    (stdout, stderr) = proc.communicate()
+    printLog(stdout)
+    printLog(stderr)
+    printLog("ret: "+str(proc.returncode)+"\n")
+    return (proc.returncode, stdout, stderr)
 
 def cmdLog(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0, dmesg=True):
     stdin=devnull
@@ -73,7 +87,7 @@ def cmdLog(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=Non
     printLog(" ".join(args) +"\n")
     ret = subprocess.call(args, bufsize, executable, stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd, env, universal_newlines, startupinfo, creationflags)
     printLog("ret: "+str(ret)+"\n")
-    if dmesg:
+    if dmesg and DMESG=="True":
         printLog("======= dmesg start ======\n")
         cmdLog(["dmesg","-c"], dmesg=False)
         printLog("======= dmesg end ======\n")
@@ -387,6 +401,8 @@ class buildSetup():
     
     def load(self):
         self.unload(False)
+        subprocess.call(["modprobe", "zlib_deflate"])
+        subprocess.call(["modprobe", "zlib_inflate"])
         res = map(subprocess.call, map((lambda x:["insmod", buildDir+x ]), moduleLoadList))
         if len(res) != res.count(0):
             raise Exception("insmod of zfs modules failed")
