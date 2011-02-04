@@ -27,9 +27,6 @@ class test_atime_pos(unittest.TestCase):
         after = stat(testfile)
         self.assertNotEqual(before.st_atime, after.st_atime, "atime did not change for file access")
         snapfile = snap.mntpt +"newfile"
-        printLog("debug: "+snapfile)
-        print snapfile 
-        print str(snap)
         before = stat(snapfile)
         cat(snapfile)
         aftersnap = stat(snapfile)
