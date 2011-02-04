@@ -389,7 +389,6 @@ class buildSetup():
         for i in glob.keys():
             globals()[i] = glob[i]
         commonSetup("resources-setup")
-        unmountAll()
         self.unloadAlways = True # load-unload modules after each test
                                  # to check for leaks
         # make sure we pick up the correct commands
