@@ -403,7 +403,6 @@ class buildSetup():
     def load(self):
         self.unload(False)
         subprocess.call(["modprobe", "zlib_deflate"])
-        subprocess.call(["modprobe", "zlib_inflate"])
         res = map(subprocess.call, map((lambda x:["insmod", buildDir+x ]), moduleLoadList))
         if len(res) != res.count(0):
             raise Exception("insmod of zfs modules failed")
