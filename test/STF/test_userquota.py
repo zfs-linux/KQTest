@@ -42,6 +42,45 @@ class test_userquota(unittest.TestCase):
     def test_userquota_002_pos(self):
         lib.STFwrap.runScript(self, "/userquota/userquota_002_pos", retcheck=1)
 
+    @unittest.expectedFailure
+    def test_userquota_003_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_003_pos", retcheck=1)
 
     def test_userquota_005_neg(self):
         lib.STFwrap.runScript(self, "/userquota/userquota_005_neg")
+
+    def test_userquota_006_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_006_pos")
+
+    def test_userquota_007_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_007_pos")
+
+    def test_userquota_008_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_008_pos")
+
+    @unittest.expectedFailure
+    def test_userquota_009_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_009_pos", retcheck=1)
+
+    @unittest.expectedFailure
+    def test_userquota_010_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_010_pos", retcheck=1)
+
+    @unittest.expectedFailure
+    def test_userquota_011_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_011_pos", retcheck=1)
+
+    def test_userquota_012_neg(self):
+        lib.STFwrap.runScript(self, "/userquota/userquota_012_neg")
+
+    def test_userspace_001_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userspace_001_pos")
+
+    def test_userspace_002_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/userspace_002_pos")
+
+    def test_groupspace_001_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/groupspace_001_pos")
+
+    def test_groupspace_002_pos(self):
+        lib.STFwrap.runScript(self, "/userquota/groupspace_002_pos")
