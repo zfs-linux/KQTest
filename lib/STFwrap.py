@@ -11,6 +11,7 @@ def setupEnv():
     env = dict(os.environ)
     env["STF_SUITE"] = KQTest + "/ZFS-Test_Suite" 
     env["STF_TOOLS"] = KQTest + "/ZFS-Test_Suite/STF/usr/src/tools/stf"
+    env["ZFSBUILDPATH"] = BUILDROOT
     path = KQTest + "/ZFS-Test_Suite/tests/functional"
     return (env, path)
 
