@@ -1,0 +1,11 @@
+How to run the script
+
+1) Run any of the 4 scripts and pass the device names as command line arguments
+
+   eg. $] ./cachefile_001_pos.ksh /dev/sda1 /dev/sdb1
+	
+   eg. $] ./cachefile_002_pos.ksh /dev/sda1 /dev/sdb1
+
+   eg. $] ./cachefile_003_pos.ksh /dev/sda1 /dev/sdb1
+
+   eg. $] ./cachefile_004_pos.ksh /dev/sda1 /dev/sdb1

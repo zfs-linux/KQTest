@@ -1,0 +1,26 @@
+How to run the script
+
+1) Run setup script first.
+   Pass the disknames as command line arguments
+
+   eg. $] ./setup.ksh sda1 sdb1
+
+2) Run online_offline_001_pos.ksh script.
+   Pass the disknames as command line arguments
+
+   eg. $] ./online_offline_001_pos.ksh sda1 sdb1
+
+3) Run online_offline_002_neg.ksh script
+   Pass the disknames as command line arguments
+
+   eg. $] ./online_offline_002_neg.ksh sda1 sdb1
+
+4) Run online_offline_003_neg.ksh script
+   Pass the disknames as command line arguments
+
+   eg. $] ./online_offline_003_neg.ksh sda1 sdb1
+
+5) Run cleanup script
+
+   eg. $] ./cleanup.ksh
+

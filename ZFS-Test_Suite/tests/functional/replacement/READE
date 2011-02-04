@@ -1,0 +1,24 @@
+Steps to Run the  replacement script:-
+
+1)  First  Run the setup.sh script
+
+	Usage to run setup.sh is
+
+	$ ./setup.sh  $diskname1 $diskname2 
+	
+	( eg . $] ./setup.sh  sda  sdc )
+
+
+2) Second run the nestedfs_001_pos.ksh  script
+
+	i)   $ ./replacement_001_pos.ksh
+
+	ii)  $ ./replacement_002_pos.ksh
+
+	iii)  $ ./replacement_003_pos.ksh
+
+)
+
+3) Lastly run the cleanup.sh  script
+
+	$ ./cleanup.sh 

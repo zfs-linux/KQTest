@@ -1,0 +1,51 @@
+
+
+The ZFS Test Suite README
+
+Table of Contents
+
+ 	1. Introduction
+ 
+ 
+ 	2. Running the tests
+ 
+		2.1 Setting environment
+
+ 		2.2 Configuring and running 
+
+
+
+1. Introduction
+
+	This file contains the basics you need to know for the ZFS test suite
+
+
+2. Running the tests
+
+	2.1 Setting environment
+
+		
+		add this commond  bash_profile
+	
+			export STF_SUITE=/home/kqinfo/ZFS-test/ZFS-Test_Suite
+			export STF_TOOLS=/home/kqinfo/ZFS-test/ZFS-Test_Suite/STF/usr/src/tools/stf
+	2.2 Configuring	and running
+
+		1.	$]cd ~/ZFS-test/ZFS-Test_Suite/tests/functional/
+
+		2.	cd in every test folder 
+			
+			$] cd atime
+
+		3.	First run the setup file (You must be root user) with DISK name
+
+			$] ./setup diskname
+
+		4.	Then run the test cases
+
+
+	NOTE :	Every test case run after executing setup file successfuly.
+
+
+Please add the path to the ZFS_test_Suite/bin dir in to your PATH variable. ( edited by rohan )
+

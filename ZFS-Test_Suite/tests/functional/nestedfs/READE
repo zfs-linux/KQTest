@@ -1,0 +1,21 @@
+Steps to Run the nestedfs script:-
+
+1)  First  Run the setup.sh script
+
+	Usage to run setup.sh is
+
+	$ ./setup.sh  $diskname1 
+	
+	( eg . $] ./setup.sh  sda  )
+
+
+2) Second run the nestedfs_001_pos.ksh  script
+
+	$  ./nestedfs_001_pos.ksh
+
+
+3) Lastly run the cleanup.sh  script
+
+	$ ./cleanup.sh 
+
+

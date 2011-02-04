@@ -1,0 +1,9 @@
+
+1. To run setup
+   $./setup Device1
+
+2. $./truncate_001_pos device2 #### Device2 not neccessary 
+
+3. $./truncate_002_pos
+
+4. $./cleanup

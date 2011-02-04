@@ -1,0 +1,22 @@
+Steps to Run the grow_replicas script:-
+
+1)  First  Run the setup.sh script
+
+	Usage to run setup.sh is
+
+	$ ./setup.sh  $diskname1  $diskname2
+	
+	( eg . $] ./setup.sh  sda sdc )
+
+
+2) Second run the grow_replicas_001_pos.ksh  script
+
+	$  ./grow_replicas_001_pos.ksh    $additional_disk1  $additional_disk2 
+
+	( eg . $] ./grow_pool_001_pos.ksh sdd sde)
+
+3) Lastly run the cleanup.sh  script
+
+	$ ./cleanup.sh 
+
+

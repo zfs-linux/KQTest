@@ -1,0 +1,9 @@
+
+For Fedora:
+ Install ncompress package for uncompress command
+ and Do 'ln -s /usr/bin/uncompress /bin/uncompress'
+ 
+For ubuntu:
+ Uncompress command found  in /bin/uncompress for ubuntu so no need to install ncompress package
+
+

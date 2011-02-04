@@ -1,0 +1,62 @@
+#
+# This is default values of varible
+#
+
+FILE_WRITE="file_write"
+FILE_TRUNC="file_trunc"
+
+# Default to compression ON
+COMPRESSION_PROP=on
+# # Default to using the checksum
+CHECKSUM_PROP=on
+
+TESTPOOL="tank"
+TESTDIR="/tank/zfs"
+TESTFS="zfs"
+TESTDIR1="/tank1/zfs1"
+TESTFS1="zfs1"
+TESTPOOL1="tank1"
+
+KEEP="nothing"
+NO_POOLS="nothing"
+
+TESTFILE="test_file"
+TESTFILE1="test_file1"
+
+TESTSNAP="snap1"
+TESTCLONE="clone1"
+
+WAITTIME=60
+
+# Description : This function is used to check existent of disk
+#
+# Parameter : Disk Name 
+
+function existent_of_disk
+{
+	DISK=$1
+
+	searchStr=`find /dev/ -name $DISK`
+	echo "$searchStr" | grep -F "$DISK"
+
+	status=$?
+
+	if [ $status != 0 ]
+	then	
+		echo -e " Disk not exist \n Enter valid Disk name "
+		return 1
+	else 
+		
+		cat /proc/mounts | grep "$DISK"
+		
+		status=$?
+
+		if [ $status == 0 ]
+	        then
+        	        echo -e " Disk is Already mounted "
+                	return 1
+		fi
+	fi
+ 
+	return 0 
+}

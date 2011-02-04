@@ -1,0 +1,29 @@
+Steps to execute script:
+
+1. Run setup file first
+       	 cd scrub_mirror
+	 $setup.ksh Primary_physical_device Secondary_physical_device
+
+    Imp Note :
+    In setup.ksh instead of using side primary and side secondary partition      of disk Mirror primary and Mirror Secondary.
+    we using Mirror primary and Mirror secondary as it is /dev/sda(device1) /dev/sdb(device2)
+    Partition done in methods
+    set_partition ${SIDE_PRIMARY##*s} "" $MIRROR_SIZE $MIRROR_PRIMARY
+    set_partition ${SIDE_SECONDARY##*s} "" $MIRROR_SIZE $MIRROR_SECONDARY
+    currently script will run withaout partitioning part.
+    So additional part need to be update.
+    	 
+
+2. 
+   $./scrub_mirror_001_pos.ksh Primary_physical_device
+
+3. 
+   $./scrub_mirror_002_pos.ksh Secondary_physical_device
+
+4. 
+   $./scrub_mirror_003_pos.ksh Primary_physical_device
+
+5. 
+   $./scrub_mirror_004_pos.ksh Secondary_physical_device
+
+6. $cleanup.ksh Primary_physical_device Secondary_physical_device

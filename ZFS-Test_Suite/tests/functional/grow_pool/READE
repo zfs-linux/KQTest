@@ -1,0 +1,23 @@
+Steps to Run the grow-pool script:-
+
+1)  First  Run the setup.sh script
+
+	Usage to run setup.sh is
+
+	$ ./setup.sh  $diskname 
+	
+	( eg . suppose disk name is sdb1 then  run  $setup.sh  sdb1 )
+
+
+2) Second run the grow_pool_001_pos.ksh  script
+
+	$ ./grow_pool_001_pos.ksh   $second_diskname  
+
+	( eg . suppose disk name is sdc1 then   $ ./grow_pool_001_pos.ksh  sdc1
+
+3) Lastly run the cleanup.sh  script
+
+	$ ./cleanup.sh 
+
+
+Note :- This test case is tested on two disks (each of size 2GB).
