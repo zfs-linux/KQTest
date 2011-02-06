@@ -13,3 +13,6 @@ To run KQI zfs test harness, first you need to confiure test harness.
 Confiuration file is located at $ZFS_TH_HOME/ZFS.TH.CONFIG .
 Be careful while setting configuration data, wrong configuration might crash
 your system or loose your data.
+
+Do not use '#' char in configuration parameter in ZFS.TH.CONFIG, otherwise it
+will be considered as commnet.

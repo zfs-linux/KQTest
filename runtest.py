@@ -18,14 +18,21 @@ try :
     fd.close()
     sdata = data.split('\n')
     for i in sdata:
-        globals()[i.split('=')[0]] = i.split('=')[1]
+        if len(i) > 0:
+            # check whether line is comment line or not
+            if i.count('#') == 0:
+                # basic format check for parameter and value
+                if (i.count('=') == 1) and (len(i) >2) and (i[0]!='=') : 
+                    globals()[i.split('=')[0]] = i.split('=')[1]
+                else:
+                    print "Wrong configuration : " + i
 except :
     print "Error reading config file"
 
+
+
 # The device list must be a list not a string of device names
-
 DEVICELIST = DEVICELIST.split()
-
 # done config read
  
 
