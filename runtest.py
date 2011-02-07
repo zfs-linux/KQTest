@@ -3,6 +3,13 @@
 """ Toplevel script to define the resources available for the test setup
 and to run the test cases"""
 
+### Check version of Python
+import sys
+if sys.hexversion < 34013680:
+    print "Please run this with a version of python no older than 2.7.1"
+    print "A precompiled binary is located at pkgs/ dir in the suite"
+    sys.exit(1)
+
 ###########################
 ## Configuration section ##
 ###########################
@@ -33,6 +40,12 @@ except :
 
 # The device list must be a list not a string of device names
 DEVICELIST = DEVICELIST.split()
+
+# Path names which must terminate with a /
+for i in ["BUILDROOT", "KQTest"]:
+    if len(globals()[i]) != 0 and (globals()[i])[-1] != "/":
+             globals()[i] +="/"
+    
 # done config read
  
 
@@ -43,7 +56,7 @@ DEVICELIST = DEVICELIST.split()
 import types
 import unittest
 from lib.KQTest import *
-                              
+import sys                              
 
 
 # set path to build
@@ -52,7 +65,11 @@ bu.load()
 
 res = resources(host(map(disk, DEVICELIST)))
 loader = unittest.TestLoader()
-suite = loader.discover("test", "*.py")
+if len(sys.argv) == 2:
+    print "loading scripts from "+ sys.argv[0]
+    suite = loader.discover(sys.argv[1], "*.py")
+else: 
+        suite = loader.discover("test", "*.py")
 unittest.TextTestRunner(verbosity=2).run(suite)
 print "finished"
 
