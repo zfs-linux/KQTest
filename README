@@ -16,3 +16,6 @@ your system or loose your data.
 
 Do not use '#' char in configuration parameter in ZFS.TH.CONFIG, otherwise it
 will be considered as commnet.
+
+In able to run code you must have installed ksh on your machine.
+
