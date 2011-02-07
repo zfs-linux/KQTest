@@ -27,18 +27,18 @@ class test_userquota(unittest.TestCase):
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
         (ret, stdout, stderr) = cmdQuery([path + "/userquota/cleanup"], env=newenv, cwd=path+"/userquota")
-        self.assertNotIn("ERROR:", stdout, "setup failed")
-        self.assertNotIn("ERROR:", stderr, "setup failed")
+        self.assertNotIn("ERROR:", stdout, "cleanup failed")
+        self.assertNotIn("ERROR:", stderr, "cleanup failed")
         self.cleanup()
         self.host.putDisk(self.d1)
         getResources().cleanup()
         getResources().putHost(self.host)
 
-    @unittest.expectedFailure
+    @unittest.skip("not ported yet")
     def test_userquota_001_pos(self):
         lib.STFwrap.runScript(self, "/userquota/userquota_001_pos", retcheck=1)
         
-    @unittest.expectedFailure
+    @unittest.skip("not ported yet")
     def test_userquota_002_pos(self):
         lib.STFwrap.runScript(self, "/userquota/userquota_002_pos", retcheck=1)
 
