@@ -25,3 +25,13 @@ def runScript(self, script, retcheck=0):
     self.assertEqual(ret, retcheck, "ret: " + str(ret))
     
     
+def runScriptArgs(self, scriptlist, retcheck=0):
+    (newenv, path) = setupEnv()
+    cmd = path + scriptlist[0]
+    scriptlist[0] = cmd
+    (ret, stdout, stderr) = cmdQuery(scriptlist, env=newenv, cwd=os.path.dirname(path+"/cache"))
+    self.assertNotIn("ERROR:", stdout, "got:: " + stdout)
+    self.assertNotIn("ERROR:", stderr, "got:: " + stderr)
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+    
+    
