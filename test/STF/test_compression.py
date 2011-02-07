@@ -32,14 +32,14 @@ class test_compression(unittest.TestCase):
         getResources().putHost(self.host)
 
     def test_compress_001_pos(self):
-        lib.STFwrap.runScript(self, "compress_001_pos.ksh")
+        lib.STFwrap.runScript(self, "/compression/compress_001_pos.ksh")
  
     def test_compress_002_pos(self):
-        lib.STFwrap.runScript(self, "compress_002_pos.ksh")
+        lib.STFwrap.runScript(self, "/compression/compress_002_pos.ksh")
    
     def test_compress_003_pos(self):
-        lib.STFwrap.runScript(self, "compress_003_pos.ksh")
+        lib.STFwrap.runScript(self, "/compression/compress_003_pos.ksh")
    
     def test_compress_004_pos(self):
-        lib.STFwrap.runScript(self, "compress_004_pos.ksh")
+        lib.STFwrap.runScript(self, "/compression/compress_004_pos.ksh")
    
