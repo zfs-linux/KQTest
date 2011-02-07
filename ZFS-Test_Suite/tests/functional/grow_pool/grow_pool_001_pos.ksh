@@ -87,7 +87,7 @@ if [[ ! -s $TESTDIR/$TESTFILE1 ]]; then
 	log_fail "$TESTDIR/$TESTFILE1 was not created"
 fi
 
-DISK=/dev/$1
+DISK=$1
 if [[ -n $DISK1 ]]; then
 	log_must $ZPOOL add $TESTPOOL $DISK"s"$SLICE1
 else
