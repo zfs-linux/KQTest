@@ -22,13 +22,13 @@ class test_cache(unittest.TestCase):
         getResources().cleanup()
         getResources().putHost(self.host)
 
-    @unittest.expectedFailure("problem with output parsing script")
+    @unittest.expectedFailure
     def test_cache_001_pos(self):
         disk = self.d1[0].diskname
         disk = "/dev/" + disk
         lib.STFwrap.runScriptArgs(self, ["/cache/cache_001_pos.ksh", disk])
 
-    @unittest.expectedFailure("problem with output parsing script")
+    @unittest.expectedFailure
     def test_cache_002_pos(self):
         disk = self.d1[0].diskname
         disk = "/dev/" + disk
@@ -69,11 +69,13 @@ class test_cache(unittest.TestCase):
         disk = "/dev/" + disk
         lib.STFwrap.runScriptArgs(self, ["/cache/cache_009_pos.ksh", disk])
 
+    @unittest.expectedFailure
     def test_cache_010_neg(self):
         disk = self.d1[0].diskname
         disk = "/dev/" + disk
         lib.STFwrap.runScriptArgs(self, ["/cache/cache_010_neg.ksh", disk])
 
+    @unittest.expectedFailure
     def test_cache_011_pos(self):
         disk = self.d1[0].diskname
         disk = "/dev/" + disk
