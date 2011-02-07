@@ -48,7 +48,75 @@ cmdlist = {"awk":"AWK",
            "cmp":"CMP",
            "uncompress":"UNCOMPRESS",
            "cp":"CP",
-           }
+	   "cpio":"CPIO",
+	   "cut":"CUT",
+	   "date":"DATE",
+	   "dd":"DD",
+	   "df":"DF",
+	   "diff":"DIFF",
+	   "dirname":"DIRNAME",
+	   "du":"DU",
+	   "echo":"ECHO",
+	   "egrep":"EGREP",
+	   "env":"ENV",
+	   "fdisk":"FDISK",
+	   "fgrep":"FGREP",
+	   "file":"FILE",
+	   "find":"FIND",
+	   "fsck":"FSCK",
+	   "id":"ID",
+	   "getent":"GETENT",
+	   "grep":"GREP",
+	   "groups":"GROUPS",
+	   "groupadd":"GROUPADD",
+	   "groupdel":"GROUPDEL",
+	   "groupmod":"GROUPMOD",
+	   "head":"HEAD",
+	   "hostname":"HOSTNAME",
+	   "kill":"KILL",
+	   "ksh":"KSH",
+	   "ls":"LS",
+	   "logname":"LOGNAME",
+	   "mkdir":"MKDIR",
+	   "sudo":"SUDO",
+	   "su":"SU",
+	   "mknod":"MKNOD",
+	   "modinfo":"MODINFO",
+	   "mount":"MOUNT",
+	   "mv":"MV",
+	   "gawk":"GAWK",
+	   "ping":"PING",
+	   "printf":"PRINTF",
+	   "pgrep":"PGREP",
+	   "pkill":"PKILL",
+	   "ps":"PS",
+	   "pwd":"PWD",
+	   "rcp":"RCP",
+	   "reboot":"REBOOT",
+	   "rm":"RM",
+	   "rmdir":"RMDIR",
+	   "rsh":"RSH",
+	   "sed":"SED",
+	   "sleep":"SLEEP",
+	   "sum":"SUM",
+	   "sort":"SORT",
+	   "strings":"STRINGS",
+	   "sync":"SYNC",
+	   "tar":"TAR",
+	   "tail":"TAIL",
+	   "touch":"TOUCH",
+	   "tr":"TR",
+	   "true":"TRUE",
+	   "umount":"UMOUNT",
+	   "uname":"UNAME",
+	   "uniq":"UNIQ",
+	   "useradd":"USERADD",
+	   "userdel":"USERDEL",
+	   "usermod":"USERMOD",
+	   "wc":"WC",
+	   "md5sum":"MD5SUM",
+	   
+          }
            
 
 #####
@@ -71,6 +139,10 @@ def unmountAll():
 def commonSetup(logid):
     threadLocal.testId = logid
     threadLocal.logfile = LOGDIR+"/"+logid
+    try:
+           os.mkdir(KQTest+"/logdir")        
+    except:
+           pass
     open(threadLocal.logfile, 'w') # truncate file TODO do properly
     threadLocal.logfd = open(threadLocal.logfile, 'a')
     subprocess.call(["dmesg","-c"], stdout=devnull,stderr=devnull)
@@ -424,7 +496,8 @@ class buildSetup():
                 cmdcfg.write("export "+cmdlist[i] +"="+ stdout+"\n")
             else:
                 raise Exception("command " + i + " not found, please install")
-        cmdcfg.write("export CMDS=\"\
+        cmdcfg.write("export ZFS=${ZFSBUILDPATH}/zfs/cmd/zfs/zfs\n\
+export ZPOOL=${ZFSBUILDPATH}zfs/cmd/zpool/zpool\nexport WAIT=wait\nexport CMDS=\"\
 $AWK $ARP $BASENAME $CAT $CD $CHGRP $CHMOD $CHOWN $CKSUM $CLRI $CMP $COMPRESS \
  $UNCOMPRESS $COREADM $CP $CPIO $CUT $DATE $DD $DEVFSADM $DF $DIFF $DIRCMP \
  $DIRNAME $DU $DUMPADM $ECHO $EGREP $ENV $FDISK $FF $FGREP $FILE $FIND $FMADM \
@@ -439,7 +512,6 @@ $AWK $ARP $BASENAME $CAT $CD $CHGRP $CHMOD $CHOWN $CKSUM $CLRI $CMP $COMPRESS \
  $UNPACK $USERADD $USERDEL $USERMOD $WAIT $WC $ZONEADM $ZONECFG $ZLOGIN \
  $ZONENAME $ZDB $RUNWATTR $ZFS $ZPOOL\"\
 ")
-        
     
     def load(self):
         self.unload(False)
