@@ -29,6 +29,7 @@
 
 . $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
 
 
 if [ $(id -u) != 0 ]; then
@@ -39,4 +40,5 @@ fi
 $ZPOOL history > /dev/null 2>&1
 (($? != 0)) && log_unsupported
 
+destroy_pool $TESTPOOL
 default_cleanup
