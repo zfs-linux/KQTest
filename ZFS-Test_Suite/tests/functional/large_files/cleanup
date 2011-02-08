@@ -28,5 +28,8 @@
 #
 
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/commands.cfg
+
 
 default_cleanup
