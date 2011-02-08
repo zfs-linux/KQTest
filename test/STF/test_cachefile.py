@@ -4,7 +4,7 @@ import threading
 from lib.utils import *
 import lib.STFwrap
 
-class test_grow_pool(unittest.TestCase):
+class test_cachefile_pool(unittest.TestCase):
 
     def setUp(self):
         commonSetup(self.id())
