@@ -30,35 +30,5 @@
 . $STF_SUITE/include/libtest.kshlib
 . $STF_SUITE/include/default_common_varible.kshlib
 
-
-#. $STF_SUITE/include/libtest.kshlib
-
-#DISK=${DISKS%% *}
-
-#default_setup $DISK
-
-DISK=$1
-flag=0
-
-if [ $(id -u) != 0 ]; then
-         echo "You Must run as root"
-	 exit 1	
-fi
-if [ $# == 1 ]
-then
-	existent_of_disk $DISK
-
-	flag=$?
-	if [ $flag == 0 ]
-	then
-		default_setup $DISK
-	else	
-		echo " Wrong input"
-		exit 1
-	fi
-else
-	echo " Enter the only one argument as disk name "
-	exit 1
-fi
-
-
+DISK="$@"
+default_setup $DISK
