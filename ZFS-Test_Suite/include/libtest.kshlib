@@ -1365,7 +1365,6 @@ function verify_filesys # pool filesystem dir
 
 	log_must $ZPOOL import -a 
 
-#	$ZFS mount -a			//temp change 
 	$ZDB -cudi $filesys > $zdbout 2>&1
 	if [[ $? != 0 ]]; then
 		log_note "Output: $ZDB -cudi $filesys"

@@ -76,7 +76,6 @@ multi_blk_file=$TESTDIR/multiblkfile.$$
 typeset -i blksize=512
 typeset -i fsize=0
 typeset -i offset=0
-
 for propname in "compression" "compress"
 do
 	for value in $(get_compress_opts zfs_compress)
@@ -102,10 +101,11 @@ do
 			fi
 			(( fsize = offset )) 	
 			#log_must $MKFILE $fsize $single_blk_file
-			log_must $MKFILE if=/dev/zero of=$single_blk_file bs=1M count=$fsize
+			log_must $DD if=/dev/zero of=$single_blk_file bs=$fsize count=1 
+
 			(( fsize = blksize + offset ))
 			#log_must $MKFILE $fsize $multi_blk_file
-			log_must $MKFILE if=/dev/zero of=$multi_blk_file bs=1M count=$fsize
+			log_must $DD if=/dev/zero of=$multi_blk_file bs=$fsize count=1
 
 			(( blksize = blksize * 2 ))
 		done

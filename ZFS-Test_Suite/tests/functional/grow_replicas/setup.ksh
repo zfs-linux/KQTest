@@ -32,14 +32,16 @@
 . $STF_SUITE/tests/functional/grow_replicas/grow_replicas.cfg
 
 #verify_runnable "global"
-DISK=$1
+DISK="$1"
 DISK1=$2
 #if ! $(existent_of_disk $DIS) ; then
 #	log_unsupported "This directory cannot be run on raw files."
 #fi
 log_note "Creating pool type: $POOLTYPE"
 
-if [[ -n $DISK2 ]]; then
+
+if [[ -n $DISK2 ]]
+then
         log_note "No spare disks available. Using slices on $DISK"
 	for i in $SLICE0 $SLICE1 $SLICE3 $SLICE4 ; do
         	log_must set_partition $i "$cyl" $SIZE $DISK
@@ -52,8 +54,10 @@ else
 #        log_must set_partition $SLICE "" $SIZE $DISK1
 #        create_pool $TESTPOOL $POOLTYPE ${DISK0}s${SLICE} \
 #	    ${DISK1}s$SLICE
+
 	 zpool create  -f  $TESTPOOL $POOLTYPE $DISK $DISK1
 fi
+
 
 $RM -rf $TESTDIR  || log_unresolved Could not remove $TESTDIR
 $MKDIR -p $TESTDIR || log_unresolved Could not create $TESTDIR
