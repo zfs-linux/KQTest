@@ -25,6 +25,21 @@ if sys.hexversion < 34013680:
     print "A precompiled binary is located at pkgs/ dir in the suite"
     sys.exit(1)
 
+testdir="test"
+htmlreport = None
+
+# Currently the arguments are uncomplicated enough that we don't have
+# to use getopts
+
+if len(sys.argv) not in [1, 2, 3, 4]:
+    usage()
+if len(sys.argv) in [3,4] :
+    if sys.argv[1] != "-r":
+        usage()
+    htmlreport = sys.argv[2]
+if len(sys.argv) in [2,4]:
+    testdir = sys.argv[-1]
+
 ###########################
 ## Configuration section ##
 ###########################
@@ -51,8 +66,6 @@ try :
 except :
     print "Error reading config file"
 
-
-
 # The device list must be a list not a string of device names
 DEVICELIST = DEVICELIST.split()
 
@@ -72,6 +85,7 @@ import types
 import unittest
 from lib.KQTest import *
 import sys                              
+import lib.HTMLTestRunner
 
 
 # set path to build
@@ -80,12 +94,41 @@ bu.load()
 
 res = resources(host(map(disk, DEVICELIST)))
 loader = unittest.TestLoader()
-if len(sys.argv) == 2:
-    print "loading scripts from "+ sys.argv[0]
-    suite = loader.discover(sys.argv[1], "*.py")
-else: 
-        suite = loader.discover("test", "*.py")
-unittest.TextTestRunner(verbosity=2).run(suite)
-print "finished"
+
+print "loading scripts from "+ testdir
+suite = loader.discover(testdir, "*.py")
+testsuite = unittest.TestSuite()
+testsuite.addTests(suite)
+if htmlreport is None:
+    unittest.TextTestRunner(verbosity=2).run(suite)
+else:
+    fp = file(htmlreport, 'wb')
+    runner  = lib.HTMLTestRunner.HTMLTestRunner(
+                        stream=fp,
+                        title='ZFS Unit Test',
+                        description='All tests under '+testdir, 
+                        verbosity=2
+                        )
+    runner.run(testsuite)
 
 bu.unload()
+
+def     usage():
+    print """
+This is the toplevel script to execute all the ZFS test cases. 
+
+python7.1 runtest.py [-r report.html] [startdir]
+
+$ python7.1 runtest.py
+
+Running it without any arguments will result in each unittest being
+executed and the summurized result being output to the stdout.
+
+-r         This will generate a html report of the tests run in the specified
+           file. If this option is not specified the progress of the tests will 
+           be print on the stdout.
+
+startdir   If you want to run a subset of the tests specify the 
+           root of the subtree underwhich all test must be executed
+"""
+    os.exit(1)
