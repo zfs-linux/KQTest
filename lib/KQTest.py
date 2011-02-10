@@ -115,7 +115,7 @@ cmdlist = {"awk":"AWK",
 	   "usermod":"USERMOD",
 	   "wc":"WC",
 	   "md5sum":"MD5SUM",
-	   
+	   "nawk":"NAWK"	 
           }
            
 
