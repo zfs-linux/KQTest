@@ -498,8 +498,8 @@ class buildSetup():
             globals()["buildDir"] = ""
         else:
             globals()["buildDir"] = buildpath
-            cmdzpool = buildpath + "/zfs/cmd/zpool/zpool"
-            cmdzfs = buildpath + "/zfs/cmd/zfs/zfs"
+            globals()["cmdzpool"] = buildpath + "/zfs/cmd/zpool/zpool"
+            globals()["cmdzfs"] = buildpath + "/zfs/cmd/zfs/zfs"
         # generate the command.cfg file for STF
         cmdcfg = open(KQTest+"/ZFS-Test_Suite/commands.cfg", "w")
         for i in cmdlist.keys():
