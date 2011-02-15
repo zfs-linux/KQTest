@@ -10,7 +10,7 @@ class test_stress(unittest.TestCase):
     def setUp(self):
         commonSetup(self.id())
         self.host = getResources().getHost()
-        self.d1 = self.host.getDisk(self.getNumFreeDisks())
+        self.d1 = self.host.getDisk(self.host.getNumFreeDisks())
         self.tank = self.host.pool("tank", self.d1)
         self.fs = self.tank.getFs()
         
