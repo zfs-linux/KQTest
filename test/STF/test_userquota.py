@@ -7,7 +7,6 @@ import lib.STFwrap
 class test_userquota(unittest.TestCase):
     def setUp(self):
         commonSetup(self.id())
-        self.cleanup()
         self.host = getResources().getHost()
         self.d1 = self.host.getDisk()
         disk = self.d1[0].diskname
@@ -20,16 +19,13 @@ class test_userquota(unittest.TestCase):
     def cleanup(self):
         (newenv, path) = lib.STFwrap.setupEnv()
         cmdQuery([path + "/userquota/cleanup"], env=newenv, cwd=path+"/userquota")
-        cmdLog(["userdel","quser1"])
-        cmdLog(["userdel","quser2"])
-        cmdLog(["groupdel","qgroup"])
 
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
         (ret, stdout, stderr) = cmdQuery([path + "/userquota/cleanup"], env=newenv, cwd=path+"/userquota")
         self.assertNotIn("ERROR:", stdout, "cleanup failed")
         self.assertNotIn("ERROR:", stderr, "cleanup failed")
-        self.cleanup()
+	self.cleanup()
         self.host.putDisk(self.d1)
         getResources().cleanup()
         getResources().putHost(self.host)
