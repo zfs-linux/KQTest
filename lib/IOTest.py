@@ -55,11 +55,12 @@ class fsop():
 
 
 
-class iotest(fsop):
+class iotest(fsop, threading.Thread):
     """Class which executes the iotest utility"""
 
     def __init__(self, outfile, fs, woff=0, wcount=1, wiosize=4096, thrds=1, seq=True, sparse=False, sparseFactor=None,method="bufferedio", verbose=False):
-        """    method can be one of bufferedio,directio or mmap"""
+        """    method can be on eof bufferedio,directio or mmap"""
+        threading.Thread.__init__(self)
         fsop.__init__(self)
         self.outfile = outfile
         self.woff = woff
@@ -77,6 +78,11 @@ class iotest(fsop):
         assert(self.state == NOTSTARTED)
 
     def run(self):
+        commonSetup("stress-thread-"+str(self.ident))
+        self.doWrite()
+        self.verify()
+
+    def doWrite(self):
 
         run=[]
         run.append(iotestexec)
