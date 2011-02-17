@@ -150,6 +150,7 @@ def unmountAll():
                               stdout=devnull,stderr=devnull)
     if ret != 0:
         raise Exception("Failed to unmount")
+    return ret
 
 def commonSetup(logid):
     threadLocal.testId = logid
@@ -452,9 +453,11 @@ class fs():
 
     def unmount(self):
         if self.snap:
-            cmdLog(["umount",self.mntpt])
+            ret = cmdLog(["umount",self.mntpt])
+            return ret
         else:
-            cmdLog([cmdzfs, "unmount", self.name])
+            ret = cmdLog([cmdzfs, "unmount"]+[self.pool.name+"/"+self.name], stdin=devnull, stdout=devnull,stderr=devnull)
+            return ret
 
 
     def snapshot(self, name):
@@ -468,7 +471,12 @@ class fs():
         return fs(self.pool, self.name + "@" + name, self.mntpt +".zfs/snapshot/"+name, snap=True)
         
     def create(self):
-        pass
+        ret = cmdLog([cmdzfs, "create"]+[self.pool.name+"/"+self.name], stdin=devnull, stdout=devnull,stderr=devnull)
+        if ret != 0:
+            raise Exception("Failed to create fs")
+        self.mounted = True
+        return ret
+ 
 
 
 class zvol():
