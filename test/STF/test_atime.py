@@ -4,7 +4,7 @@ import threading
 from lib.utils import *
 import lib.STFwrap
 
-class test_reservation(unittest.TestCase):
+class test_atime(unittest.TestCase):
     def setUp(self):
         commonSetup(self.id())
         self.host = getResources().getHost()
