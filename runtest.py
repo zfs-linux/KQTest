@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python/
 
 # Copyright (c) 2010 Knowledge Quest Infotech Pvt. Ltd. 
 # Produced at Knowledge Quest Infotech Pvt. Ltd. 
@@ -20,12 +20,14 @@ and to run the test cases"""
 
 ### Check version of Python
 import sys
+import os.path
 if sys.hexversion < 34013680:
     print "Please run this with a version of python no older than 2.7.1"
     print "A precompiled binary is located at pkgs/ dir in the suite"
     sys.exit(1)
 
 testdir="test"
+testfile="*.py"
 htmlreport = None
 
 # Currently the arguments are uncomplicated enough that we don't have
@@ -38,7 +40,11 @@ if len(sys.argv) in [3,4] :
         usage()
     htmlreport = sys.argv[2]
 if len(sys.argv) in [2,4]:
-    testdir = sys.argv[-1]
+    if os.path.isdir(sys.argv[-1]):
+        testdir = sys.argv[-1]
+	testfile = "*.py"
+    else:
+	(testdir, testfile) = os.path.split(sys.argv[-1])
 
 ###########################
 ## Configuration section ##
@@ -94,9 +100,9 @@ bu.load()
 
 res = resources(host(map(disk, DEVICELIST)))
 loader = unittest.TestLoader()
-
 print "loading scripts from "+ testdir
-suite = loader.discover(testdir, "*.py")
+suite = loader.discover(testdir, "__init__.py")
+suite = loader.discover(testdir, testfile)  
 testsuite = unittest.TestSuite()
 testsuite.addTests(suite)
 if htmlreport is None:
