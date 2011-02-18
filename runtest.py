@@ -123,7 +123,7 @@ def     usage():
     print """
 This is the toplevel script to execute all the ZFS test cases. 
 
-python7.1 runtest.py [-r report.html] [startdir]
+python7.1 runtest.py [-r report.html] [startdir] | [filepath]
 
 $ python7.1 runtest.py
 
@@ -136,5 +136,8 @@ executed and the summurized result being output to the stdout.
 
 startdir   If you want to run a subset of the tests specify the 
            root of the subtree underwhich all test must be executed
+
+filepath   If you want to run any particular script, need to specify the absolute path
+           for that script which you want to execute.        
 """
     os.exit(1)
