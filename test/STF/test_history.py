@@ -31,6 +31,12 @@ class test_history(unittest.TestCase):
     def test_history_003_pos(self):
 	lib.STFwrap.runScript(self, "/history/history_003_pos.ksh")
 
+    def test_history_004_pos(self):
+        lib.STFwrap.runScript(self, "/history/history_004_pos.ksh")
+
+    def test_history_006_neg(self):
+        lib.STFwrap.runScript(self, "/history/history_006_neg.ksh")
+
     def test_history_005_neg(self):
 	lib.STFwrap.runScript(self, "/history/history_005_neg.ksh")
 
