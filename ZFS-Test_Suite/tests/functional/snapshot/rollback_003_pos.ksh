@@ -26,7 +26,11 @@
 #
 # ident	"@(#)rollback_003_pos.ksh	1.6	09/08/06 SMI"
 #
+. $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 . $STF_SUITE/tests/functional/cli_root/zfs_rollback/zfs_rollback_common.kshlib
 
 
@@ -91,7 +95,7 @@ log_must $ZFS snapshot $SNAPPOOL
 log_must $ZFS rollback $SNAPPOOL
 log_mustnot $ZFS snapshot $SNAPPOOL
 
-log_must $TOUCH /$TESTPOOL/$TESTFILE
+log_must $TOUCH /$TESTPOOL/$TESTFILE$$
 
 log_must $ZFS rollback $SNAPPOOL
 log_must $ZFS create $TESTPOOL/$TESTFILE
