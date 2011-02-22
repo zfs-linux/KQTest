@@ -26,7 +26,11 @@
 #
 # ident	"@(#)snapshot_010_pos.ksh	1.2	07/01/09 SMI"
 #
+
+. $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 
 ################################################################################
 #
@@ -87,6 +91,10 @@ snapctrclone=$ctr/$TESTCLONE@$TESTSNAP
 snapctrfs=$SNAPCTR
 
 #preparation for testing
+
+
+log_must $ZFS create $ctr 
+log_must $ZFS create $ctrfs
 log_must $ZFS snapshot $ctrfs@$TESTSNAP1
 if is_global_zone; then
 	log_must $ZFS create -V $VOLSIZE $ctrvol
