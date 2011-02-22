@@ -26,8 +26,11 @@
 #
 # ident	"@(#)snapshot_007_pos.ksh	1.2	07/01/09 SMI"
 #
+. $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
-
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 ################################################################################
 #
 # __stc_assertion_start
@@ -65,15 +68,11 @@ function cleanup
 		fi
 
 		if [[ -e $SNAPDIR.$i ]]; then
-			log_must $RM -rf $SNAPDIR1.$i > /dev/null 2>&1
+			log_must $RM -rf $SNAPDIR.$i > /dev/null 2>&1
 		fi
 
 		(( i = i + 1 ))
 	done
-
-	if [[ -e $SNAPDIR1 ]]; then
-		log_must $RM -rf $SNAPDIR1 > /dev/null 2>&1
-	fi
 
 	if [[ -e $TESTDIR ]]; then
 		log_must $RM -rf $TESTDIR/* > /dev/null 2>&1
@@ -92,7 +91,7 @@ typeset -i COUNT=10
 log_note "Create some files in the $TESTDIR directory..."
 typeset -i i=1
 while [[ $i -lt $COUNT ]]; do
-	log_must $FILE_WRITE -o create -f $TESTDIR1/file$i \
+	log_must $FILE_WRITE -o create -f $TESTDIR/file$i \
 	   -b $BLOCKSZ -c $NUM_WRITES -d $i
 	log_must $ZFS snapshot $SNAPCTR.$i 
 
@@ -101,17 +100,18 @@ done
 
 log_note "Remove all of the original files"
 [[ -n $TESTDIR ]] && \
-    log_must $RM -rf $TESTDIR1/file* > /dev/null 2>&1
+    log_must $RM -rf $TESTDIR/$TESTFS/file$i > /dev/null 2>&1
 
 i=1
 while [[ $i -lt $COUNT ]]; do
-	FILECOUNT=`$LS $SNAPDIR1.$i/file* | wc -l`
+	FILECOUNT=`$LS $SNAPDIR/$TESTSNAP.$i | wc -l`
 	typeset j=1
-	while [ $j -lt $FILECOUNT ]; do
-		log_must $FILE_CHECK $SNAPDIR1.$i/file$j $j
+	while [ $j -le $FILECOUNT ]; do
+		log_must $FILE_CHECK $SNAPDIR/$TESTSNAP.$i/file$j $j
 		(( j = j + 1 ))
 	done
 	(( i = i + 1 ))
 done
 
 log_pass "All files are consistent"
+
