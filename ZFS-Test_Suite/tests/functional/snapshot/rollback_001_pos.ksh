@@ -26,7 +26,11 @@
 #
 # ident	"@(#)rollback_001_pos.ksh	1.2	07/01/09 SMI"
 #
+. $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 
 ################################################################################
 #
@@ -89,7 +93,7 @@ done
 
 log_must $ZFS snapshot $SNAPFS
 
-FILE_COUNT=`$LS -Al $SNAPDIR | $GREP -v "total" | wc -l`
+FILE_COUNT=`$LS -Al $SNAPDIR/$TESTSNAP | $GREP -v "total" | wc -l`
 if [[ $FILE_COUNT -ne $COUNT ]]; then
         $LS -Al $SNAPDIR
         log_fail "AFTER: $SNAPFS contains $FILE_COUNT files(s)."
@@ -115,8 +119,8 @@ if [[ $FILE_COUNT -ne 0 ]]; then
         log_fail "$TESTDIR contains $FILE_COUNT after* files(s)."
 fi
 
-FILE_COUNT=`$LS -Al $TESTDIR/before* 2> /dev/null \
-    | $GREP -v "total" | wc -l`
+
+FILE_COUNT=`$LS -Al $TESTDIR/before* 2> /dev/null | $GREP -v "total" | wc -l`
 if [[ $FILE_COUNT -ne $COUNT ]]; then
 	$LS -Al $TESTDIR
 	log_fail "$TESTDIR contains $FILE_COUNT before* files(s)."
