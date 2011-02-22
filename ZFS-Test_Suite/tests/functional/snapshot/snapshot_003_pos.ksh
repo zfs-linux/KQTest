@@ -30,8 +30,7 @@
 . $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
 . $STF_SUITE/include/default_common_varible.kshlib
-#. $STF_SUITE/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
-. /home/kqinfo/ZFS-test/ZFS-Test_Suite/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
+. $STF_SUITE/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
 . $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 
 
@@ -95,7 +94,7 @@ typeset -i COUNT=10
 log_note "Create some files in the $TESTDIR directory..."
 typeset -i i=1
 while [[ $i -lt $COUNT ]]; do
-	log_must ./$FILE_WRITE -o create -f $TESTDIR/file$i -b $BLOCKSZ -c $NUM_WRITES -d $i
+	log_must $FILE_WRITE -o create -f $TESTDIR/file$i -b $BLOCKSZ -c $NUM_WRITES -d $i
 	log_must $ZFS snapshot $SNAPFS.$i 
 
 	(( i = i + 1 ))
@@ -104,13 +103,13 @@ done
 log_note "Remove all of the original files"
 [[ -n $TESTDIR ]] && \
     log_must $RM -rf $TESTDIR/file* > /dev/null 2>&1
-
+#mkdir $TESTDIR/$SNAPROOT/$TESTSNAP
 i=1
 while [[ $i -lt $COUNT ]]; do
-	FILECOUNT=`$LS $SNAPDIR.$i/file* | wc -l`
+	FILECOUNT=`$LS $SNAPDIR/$TESTSNAP.$i | wc -l`
 	typeset j=1
-	while [ $j -lt $FILECOUNT ]; do
-		log_must $FILE_CHECK $SNAPDIR.$i/file$j $j
+	while [ $j -le $FILECOUNT ]; do
+		log_must $FILE_CHECK $SNAPDIR/$TESTSNAP.$i/file$j $j
 		(( j = j + 1 ))
 	done
 	(( i = i + 1 ))
