@@ -27,6 +27,11 @@
 # ident	"@(#)snapshot_011_pos.ksh	1.2	07/01/09 SMI"
 #
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/commands.cfg
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
+
 
 ################################################################################
 #
@@ -61,11 +66,10 @@ verify_runnable "both"
 
 function cleanup
 {
-	snapexists $SNAPPOOL && \
-		log_must $ZFS destroy -r $SNAPPOOL
+        $ZFS umount -a
+	snapexists $SNAPPOOL && log_must $ZFS destroy -r $SNAPPOOL 
 
-	[[ -e $TESTDIR ]] && \
-		log_must $RM -rf $TESTDIR/* > /dev/null 2>&1
+	[[ -e $TESTDIR ]] && log_must $RM -rf $TESTDIR/* > /dev/null 2>&1 
 }
 
 log_assert "Verify that rollback to a snapshot created by snapshot -r succeeds."
@@ -79,15 +83,14 @@ typeset -i COUNT=10
 log_note "Populate the $TESTDIR directory (prior to snapshot)"
 typeset -i i=0
 while (( i < COUNT )); do
-	log_must $FILE_WRITE -o create -f $TESTDIR/before_file$i \
-	   -b $BLOCKSZ -c $NUM_WRITES -d $i
+	log_must $FILE_WRITE -o create -f $TESTDIR/before_file$i -b $BLOCKSZ -c $NUM_WRITES -d $i 
 
 	(( i = i + 1 ))
 done
 
 log_must $ZFS snapshot -r $SNAPPOOL
 
-FILE_COUNT=`$LS -Al $SNAPDIR | $GREP -v "total" | wc -l`
+FILE_COUNT=`$LS -Al $SNAPDIR/$TESTSNAP | $GREP -v "total" | wc -l`
 if (( FILE_COUNT != COUNT )); then
         $LS -Al $SNAPDIR
         log_fail "AFTER: $SNAPFS contains $FILE_COUNT files(s)."
@@ -96,8 +99,7 @@ fi
 log_note "Populate the $TESTDIR directory (post snapshot)"
 typeset -i i=0
 while (( i < COUNT )); do
-        log_must $FILE_WRITE -o create -f $TESTDIR/after_file$i \
-           -b $BLOCKSZ -c $NUM_WRITES -d $i
+        log_must $FILE_WRITE -o create -f $TESTDIR/after_file$i -b $BLOCKSZ -c $NUM_WRITES -d $i
 
         (( i = i + 1 ))
 done
@@ -113,11 +115,9 @@ if (( FILE_COUNT != 0 )); then
         log_fail "$TESTDIR contains $FILE_COUNT after* files(s)."
 fi
 
-FILE_COUNT=`$LS -Al $TESTDIR/before* 2> /dev/null \
-    | $GREP -v "total" | wc -l`
+FILE_COUNT=`$LS -Al $TESTDIR 2> /dev/null | $GREP -v "total" | wc -l`
 if (( FILE_COUNT != $COUNT )); then
 	$LS -Al $TESTDIR
 	log_fail "$TESTDIR contains $FILE_COUNT before* files(s)."
 fi
-
 log_pass "Rollback with child snapshot works as expected."
