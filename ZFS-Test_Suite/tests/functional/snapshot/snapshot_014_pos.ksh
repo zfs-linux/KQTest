@@ -79,8 +79,6 @@ log_must $ZFS create $TESTPOOL/$TESTCTR/$TESTFS1
 log_must $ZFS set quota=$FSQUOTA $TESTPOOL/$TESTCTR/$TESTFS1
 #log_must $MKFILE $FILESIZE $TESTDIR1/$TESTFILE
 
-$ZFS list -t all
-
 log_must $DD if=/dev/zero of=$TESTDIR/$TESTFILE bs=$FILESIZE count=1
 
 log_must $ZFS snapshot $SNAPCTR
