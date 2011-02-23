@@ -31,6 +31,9 @@ class test_snapshot(unittest.TestCase):
     def test_snapshot_002_pos(self):
 	lib.STFwrap.runScript(self, "/snapshot/snapshot_002_pos.ksh")
 
+    def test_snapshot_003_pos(self):
+	lib.STFwrap.runScript(self, "/snapshot/snapshot_003_pos.ksh")
+
     def test_snapshot_004_pos(self):
         lib.STFwrap.runScript(self, "/snapshot/snapshot_004_pos.ksh")
 
@@ -40,5 +43,14 @@ class test_snapshot(unittest.TestCase):
     def test_snapshot_006_pos(self):
 	lib.STFwrap.runScript(self, "/snapshot/snapshot_006_pos.ksh")
 
+    def test_snapshot_007_pos(self):
+	lib.STFwrap.runScript(self, "/snapshot/snapshot_007_pos.ksh")
+
     def test_snapshot_008_pos(self):
 	lib.STFwrap.runScript(self, "/snapshot/snapshot_008_pos.ksh")
+
+    def test_rollback_001_pos(self):
+	lib.STFwrap.runScript(self, "/snapshot/rollback_001_pos.ksh")
+
+    def test_rollback_003_pos(self):
+	lib.STFwrap.runScript(self, "/snapshot/rollback_003_pos.ksh")
