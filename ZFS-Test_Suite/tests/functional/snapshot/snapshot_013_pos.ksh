@@ -26,7 +26,10 @@
 #
 # ident	"@(#)snapshot_013_pos.ksh	1.2	07/01/09 SMI"
 #
+. $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 
 ################################################################################
 #
@@ -61,8 +64,9 @@ function cleanup
 	datasetexists $ctrfs && \
 		$ZFS destroy -r $ctrfs
 
+	$ZFS umount -a
 	snapexists $snappool && \
-		log_must $ZFS destroy -r $snappool
+		log_must $ZFS destroy -rf $snappool
 
 	[[ -e $TESTDIR ]] && \
 		log_must $RM -rf $TESTDIR/* > /dev/null 2>&1
@@ -77,7 +81,7 @@ snappool=$SNAPPOOL
 snapfs=$SNAPFS
 snapctr=$ctr@$TESTSNAP
 snapctrfs=$ctrfs@$TESTSNAP
-fsdir=/$ctrfs
+fsdir=$TESTDIR
 snapdir=$fsdir/.zfs/snapshot/$TESTSNAP
 
 [[ -n $TESTDIR ]] && \
@@ -85,6 +89,8 @@ snapdir=$fsdir/.zfs/snapshot/$TESTSNAP
 
 typeset -i COUNT=10
 
+log_must $ZFS create $ctr
+log_must $ZFS create $ctrfs
 log_note "Populate the $TESTDIR directory (prior to snapshot)"
 typeset -i i=0
 while (( i < COUNT )); do
@@ -103,8 +109,7 @@ fi
 
 for dir in $fsdir $snapdir; do
 	FILE_COUNT=`$LS -Al $dir | $GREP -v "total" | wc -l`
-	(( FILE_COUNT != COUNT )) && \
-        	log_fail "The data gets changed after zfs send/recv."
+	(( FILE_COUNT != COUNT )) &&  log_fail "The data gets changed after zfs send/recv."
 done
 
 log_pass "'zfs send/receive' works as expected with snapshots from 'snapshot -r'"
