@@ -62,6 +62,8 @@ class iotest(fsop, threading.Thread):
         """    method can be on eof bufferedio,directio or mmap"""
         threading.Thread.__init__(self)
         fsop.__init__(self)
+        threading.current_thread().retval = 0
+        self.retval = 0
         self.outfile = outfile
         self.woff = woff
         self.wcount = wcount
@@ -78,10 +80,47 @@ class iotest(fsop, threading.Thread):
         assert(self.state == NOTSTARTED)
 
     def run(self):
-        commonSetup("stress-thread-"+str(self.ident))
-        self.doWrite()
-        self.verify()
+        logid = "stress-test"
 
+        threadLocal.testId = "stress"
+        threadLocal.logfile = LOGDIR+"/"+logid
+        threadLocal.logfd = open(threadLocal.logfile, 'a')
+        try:
+            self.doWrite()
+            self.verify()
+        except:
+            self.retval = -1
+
+    def cmdrun(self):
+        run=[]
+        run.append(iotestexec)
+        run.append("-o") 
+        run.append(self.outfile)
+        run.append("-w")
+        run.append("offset="+str(self.woff)+",count="+str(self.wcount)+",iosize="+str(self.wiosize))
+        run.append("-y")
+        run.append(str(self.thrds))
+        run.append("-q")
+        if(self.seq):
+            run.append("seq")
+        else:
+            run.append("random")
+        run.append("-t")
+        if(self.sparse):
+            run.append("sparse")
+        else:
+            run.append("non-sparse")
+        run.append("-k")
+        run.append(self.method)
+        if hasattr(self, "sparseFactor"):
+            run.append("-s")
+            run.append(str(self.sparseFactor))
+        print run
+        self.pattern = " ".join(run)
+        run.append("-P")
+        run.append(self.pattern)
+        return  "write cmd:" + " ".join(run)
+        
     def doWrite(self):
 
         run=[]
@@ -106,13 +145,13 @@ class iotest(fsop, threading.Thread):
         run.append(self.method)
         if hasattr(self, "sparseFactor"):
             run.append("-s")
-            run.append(self.sparseFactor)
-        print run
+            run.append(str(self.sparseFactor))
         self.pattern = " ".join(run)
         run.append("-P")
         run.append(self.pattern)
-        print "write cmd:" + " ".join(run)
         (self.ret, dummy, dummy) = cmdQuery(run)
+        if self.ret != 0:
+            raise Exception("write failed")
         self.state = RUNNING
     
     def verify(self, method="bufferedio"):
@@ -141,7 +180,7 @@ class iotest(fsop, threading.Thread):
         run.append(self.method)
         if hasattr(self, "sparseFactor"):
             run.append("-s")
-            run.append(self.sparseFactor)
+            run.append(str(self.sparseFactor))
         run.append("-P")
         run.append(self.pattern)
         (ret, dummy, dummy) = cmdQuery(run)

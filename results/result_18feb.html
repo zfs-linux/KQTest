@@ -1,0 +1,1333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ZFS Unit Test</title>
+    <meta name="generator" content="HTMLTestRunner 0.8.2"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    
+<style type="text/css" media="screen">
+body        { font-family: verdana, arial, helvetica, sans-serif; font-size: 80%; }
+table       { font-size: 100%; }
+pre         { }
+
+/* -- heading ---------------------------------------------------------------------- */
+h1 {
+	font-size: 16pt;
+	color: gray;
+}
+.heading {
+    margin-top: 0ex;
+    margin-bottom: 1ex;
+}
+
+.heading .attribute {
+    margin-top: 1ex;
+    margin-bottom: 0;
+}
+
+.heading .description {
+    margin-top: 4ex;
+    margin-bottom: 6ex;
+}
+
+/* -- css div popup ------------------------------------------------------------------------ */
+a.popup_link {
+}
+
+a.popup_link:hover {
+    color: red;
+}
+
+.popup_window {
+    display: none;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    /*border: solid #627173 1px; */
+    padding: 10px;
+    background-color: #E6E6D6;
+    font-family: "Lucida Console", "Courier New", Courier, monospace;
+    text-align: left;
+    font-size: 8pt;
+    width: 500px;
+}
+
+}
+/* -- report ------------------------------------------------------------------------ */
+#show_detail_line {
+    margin-top: 3ex;
+    margin-bottom: 1ex;
+}
+#result_table {
+    width: 80%;
+    border-collapse: collapse;
+    border: 1px solid #777;
+}
+#header_row {
+    font-weight: bold;
+    color: white;
+    background-color: #777;
+}
+#result_table td {
+    border: 1px solid #777;
+    padding: 2px;
+}
+#total_row  { font-weight: bold; }
+.passClass  { background-color: #6c6; }
+.failClass  { background-color: #c60; }
+.errorClass { background-color: #c00; }
+.passCase   { color: #6c6; }
+.failCase   { color: #c60; font-weight: bold; }
+.errorCase  { color: #c00; font-weight: bold; }
+.hiddenRow  { display: none; }
+.testcase   { margin-left: 2em; }
+
+
+/* -- ending ---------------------------------------------------------------------- */
+#ending {
+}
+
+</style>
+
+</head>
+<body>
+<script language="javascript" type="text/javascript"><!--
+output_list = Array();
+
+/* level - 0:Summary; 1:Failed; 2:All */
+function showCase(level) {
+    trs = document.getElementsByTagName("tr");
+    for (var i = 0; i < trs.length; i++) {
+        tr = trs[i];
+        id = tr.id;
+        if (id.substr(0,2) == 'ft') {
+            if (level < 1) {
+                tr.className = 'hiddenRow';
+            }
+            else {
+                tr.className = '';
+            }
+        }
+        if (id.substr(0,2) == 'pt') {
+            if (level > 1) {
+                tr.className = '';
+            }
+            else {
+                tr.className = 'hiddenRow';
+            }
+        }
+    }
+}
+
+
+function showClassDetail(cid, count) {
+    var id_list = Array(count);
+    var toHide = 1;
+    for (var i = 0; i < count; i++) {
+        tid0 = 't' + cid.substr(1) + '.' + (i+1);
+        tid = 'f' + tid0;
+        tr = document.getElementById(tid);
+        if (!tr) {
+            tid = 'p' + tid0;
+            tr = document.getElementById(tid);
+        }
+        id_list[i] = tid;
+        if (tr.className) {
+            toHide = 0;
+        }
+    }
+    for (var i = 0; i < count; i++) {
+        tid = id_list[i];
+        if (toHide) {
+            document.getElementById('div_'+tid).style.display = 'none'
+            document.getElementById(tid).className = 'hiddenRow';
+        }
+        else {
+            document.getElementById(tid).className = '';
+        }
+    }
+}
+
+
+function showTestDetail(div_id){
+    var details_div = document.getElementById(div_id)
+    var displayState = details_div.style.display
+    // alert(displayState)
+    if (displayState != 'block' ) {
+        displayState = 'block'
+        details_div.style.display = 'block'
+    }
+    else {
+        details_div.style.display = 'none'
+    }
+}
+
+
+function html_escape(s) {
+    s = s.replace(/&/g,'&amp;');
+    s = s.replace(/</g,'&lt;');
+    s = s.replace(/>/g,'&gt;');
+    return s;
+}
+
+/* obsoleted by detail in <div>
+function showOutput(id, name) {
+    var w = window.open("", //url
+                    name,
+                    "resizable,scrollbars,status,width=800,height=450");
+    d = w.document;
+    d.write("<pre>");
+    d.write(html_escape(output_list[id]));
+    d.write("\n");
+    d.write("<a href='javascript:window.close()'>close</a>\n");
+    d.write("</pre>\n");
+    d.close();
+}
+*/
+--></script>
+
+<div class='heading'>
+<h1>ZFS Unit Test</h1>
+<p class='attribute'><strong>Start Time:</strong> 2011-02-18 11:06:29</p>
+<p class='attribute'><strong>Duration:</strong> 3:24:49.829173</p>
+<p class='attribute'><strong>Status:</strong> Pass 72 Failure 11 Error 2</p>
+
+<p class='description'>All tests under test</p>
+</div>
+
+
+
+<p id='show_detail_line'>Show
+<a href='javascript:showCase(0)'>Summary</a>
+<a href='javascript:showCase(1)'>Failed</a>
+<a href='javascript:showCase(2)'>All</a>
+</p>
+<table id='result_table'>
+<colgroup>
+<col align='left' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+</colgroup>
+<tr id='header_row'>
+    <td>Test Group/Test case</td>
+    <td>Count</td>
+    <td>Pass</td>
+    <td>Fail</td>
+    <td>Error</td>
+    <td>View</td>
+</tr>
+
+<tr class='passClass'>
+    <td>unit.test_unit_umount.test_unit_unmount</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c1',1)">Detail</a></td>
+</tr>
+
+<tr id='pt1.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_unit_unmount</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>unit.test_atime.test_atime_pos</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c2',1)">Detail</a></td>
+</tr>
+
+<tr id='pt2.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_atime_01</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>unit.test_pool_names.test_pool_names_pos</td>
+    <td>2</td>
+    <td>2</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c3',2)">Detail</a></td>
+</tr>
+
+<tr id='pt3.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_pool_names__001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt3.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_pool_names__002_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>unit.test_all_umount.test_all_unmount</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c4',1)">Detail</a></td>
+</tr>
+
+<tr id='pt4.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_all_unmount</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_compression.test_compression</td>
+    <td>4</td>
+    <td>4</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c5',4)">Detail</a></td>
+</tr>
+
+<tr id='pt5.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_compress_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt5.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_compress_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt5.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_compress_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt5.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_compress_004_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_grow_replicas.test_grow_replicas</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c6',1)">Detail</a></td>
+</tr>
+
+<tr id='pt6.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_grow_replicas_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_mount.test_mount</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c7',1)">Detail</a></td>
+</tr>
+
+<tr id='pt7.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_mkassert</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='failClass'>
+    <td>STF.test_sparse.test_sparse</td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c8',1)">Detail</a></td>
+</tr>
+
+<tr id='ft8.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_sparse_001_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft8.1')" >
+        fail</a>
+
+    <div id='div_ft8.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft8.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft8.1: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_sparse.py", line 35, in test_sparse_001_pos
+    lib.STFwrap.runScript(self, "/sparse/sparse_001_pos.ksh")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 39, in runScript
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+AssertionError: ret: 1
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='failClass'>
+    <td>STF.test_replacement.test_replacement</td>
+    <td>3</td>
+    <td>0</td>
+    <td>3</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c9',3)">Detail</a></td>
+</tr>
+
+<tr id='ft9.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_replacement_001_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.1')" >
+        fail</a>
+
+    <div id='div_ft9.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft9.1: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_replacement.py", line 30, in test_replacement_001_pos
+    lib.STFwrap.runScriptArgs(self, ["/replacement/replacement_001_pos.ksh"])
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 47, in runScriptArgs
+    self.assertNotIn("ERROR:", stdout, "got:: " + stdout)
+AssertionError: got:: ASSERTION: Replacing a disk during I/O completes.
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool create -f tank1 raidz /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool create -f tank1 raidz /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank1/zfs1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank1/zfs1 tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank1/zfs1 tank1/zfs1
+NOTE: Invoking file_trunc with:   -f 67108  -b 512  -c 1638  -r 
+NOTE: Invoking file_trunc with:   -f 67108  -b 512  -c 1638  -r 
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool replace -f tank1 /tank/zfs/test_file1.1 /tank/zfs/sparedisk
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool replace -f tank1 /tank/zfs/test_file1.1 /tank/zfs/sparedisk
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool export tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool export tank1
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool import -d /tank/zfs tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool import -d /tank/zfs tank1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs umount tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs umount tank1/zfs1
+args to log_pos : -cdui tank1/zfs1
+ERROR: -cdui tank1/zfs1 exited 127
+NOTE: Performing local cleanup via log_onexit (cleanup)
+args to log_pos : /bin/umount /tank1
+SUCCESS: /bin/umount /tank1
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool destroy -f tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool destroy -f tank1
+args to log_pos : /bin/rm -rf /tank/zfs/sparedisk /tank/zfs/test_file.0 /tank/zfs/test_file.1 /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+SUCCESS: /bin/rm -rf /tank/zfs/sparedisk /tank/zfs/test_file.0 /tank/zfs/test_file.1 /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft9.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_replacement_002_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.2')" >
+        fail</a>
+
+    <div id='div_ft9.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft9.2: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_replacement.py", line 33, in test_replacement_002_pos
+    lib.STFwrap.runScriptArgs(self, ["/replacement/replacement_002_pos.ksh"])
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 47, in runScriptArgs
+    self.assertNotIn("ERROR:", stdout, "got:: " + stdout)
+AssertionError: got:: ASSERTION: Replacing a disk during I/O completes.
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool create -f tank1 mirror /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool create -f tank1 mirror /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank1/zfs1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank1/zfs1 tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank1/zfs1 tank1/zfs1
+NOTE: Invoking file_trunc with:   -f 67108  -b 512  -c 1638  -r 
+NOTE: Invoking file_trunc with:   -f 67108  -b 512  -c 1638  -r 
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool attach tank1 /tank/zfs/test_file1.1 /tank/zfs/sparedisk
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool attach tank1 /tank/zfs/test_file1.1 /tank/zfs/sparedisk
+ wait for child pid 
+ wait for child pid 
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool export tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool export tank1
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool import -d /tank/zfs tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool import -d /tank/zfs tank1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs umount tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs umount tank1/zfs1
+args to log_pos : -cdui tank1/zfs1
+ERROR: -cdui tank1/zfs1 exited 127
+NOTE: Performing local cleanup via log_onexit (cleanup)
+args to log_pos : /bin/umount /tank1
+SUCCESS: /bin/umount /tank1
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool destroy -f tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool destroy -f tank1
+args to log_pos : /bin/rm -rf /tank/zfs/sparedisk /tank/zfs/test_file.0 /tank/zfs/test_file.1 /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+SUCCESS: /bin/rm -rf /tank/zfs/sparedisk /tank/zfs/test_file.0 /tank/zfs/test_file.1 /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft9.3' class='none'>
+    <td class='failCase'><div class='testcase'>test_replacement_003_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.3')" >
+        fail</a>
+
+    <div id='div_ft9.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft9.3: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_replacement.py", line 36, in test_replacement_003_pos
+    lib.STFwrap.runScriptArgs(self, ["/replacement/replacement_003_pos.ksh"])
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 47, in runScriptArgs
+    self.assertNotIn("ERROR:", stdout, "got:: " + stdout)
+AssertionError: got:: ASSERTION: Replacing a disk during I/O completes.
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool create -f tank1 mirror /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool create -f tank1 mirror /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank1/zfs1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank1/zfs1 tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank1/zfs1 tank1/zfs1
+NOTE: Invoking file_trunc with:   -f 67108  -b 512  -c 1638  -r 
+NOTE: Invoking file_trunc with:   -f 67108  -b 512  -c 1638  -r 
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool detach tank1 /tank/zfs/test_file1.1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool detach tank1 /tank/zfs/test_file1.1
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool export tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool export tank1
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool import -d /tank/zfs tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool import -d /tank/zfs tank1
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs umount tank1/zfs1
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs umount tank1/zfs1
+args to log_pos : -cdui tank1/zfs1
+ERROR: -cdui tank1/zfs1 exited 127
+NOTE: Performing local cleanup via log_onexit (cleanup)
+args to log_pos : /bin/umount /tank1
+SUCCESS: /bin/umount /tank1
+args to log_pos : /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool destroy -f tank1
+SUCCESS: /home/kqinfo/ZFS_GA/zfs/cmd/zpool/zpool destroy -f tank1
+args to log_pos : /bin/rm -rf /tank/zfs/test_file.0 /tank/zfs/test_file.1 /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+SUCCESS: /bin/rm -rf /tank/zfs/test_file.0 /tank/zfs/test_file.1 /tank/zfs/test_file1.0 /tank/zfs/test_file1.1
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_history.test_history</td>
+    <td>4</td>
+    <td>4</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c10',4)">Detail</a></td>
+</tr>
+
+<tr id='pt10.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_history_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt10.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_history_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt10.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_history_005_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt10.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_history_007_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='errorClass'>
+    <td>STF.test_atime.test_atime</td>
+    <td>2</td>
+    <td>0</td>
+    <td>0</td>
+    <td>2</td>
+    <td><a href="javascript:showClassDetail('c11',2)">Detail</a></td>
+</tr>
+
+<tr id='ft11.1' class='none'>
+    <td class='errorCase'><div class='testcase'>test_atime_001_neg</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft11.1')" >
+        error</a>
+
+    <div id='div_ft11.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft11.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft11.1: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_atime.py", line 32, in test_atime_001_neg
+    lib.STFwrap.runScript(self, "/atime/atime_001_neg.ksh")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 36, in runScript
+    (ret, stdout, stderr) = cmdQuery([fullpath], env=newenv, cwd=os.path.dirname(fullpath))
+  File "/home/kqinfo/KQTest/lib/KQTest.py", line 178, in cmdQuery
+    proc = subprocess.Popen(args, bufsize, executable, stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd, env, universal_newlines, startupinfo, creationflags)
+  File "/opt/python-2.7.1/lib/python2.7/subprocess.py", line 672, in __init__
+    errread, errwrite)
+  File "/opt/python-2.7.1/lib/python2.7/subprocess.py", line 1202, in _execute_child
+    raise child_exception
+OSError: [Errno 2] No such file or directory
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft11.2' class='none'>
+    <td class='errorCase'><div class='testcase'>test_atime_001_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft11.2')" >
+        error</a>
+
+    <div id='div_ft11.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft11.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft11.2: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_atime.py", line 29, in test_atime_001_pos
+    lib.STFwrap.runScript(self, "/atime/atime_001_pos.ksh")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 36, in runScript
+    (ret, stdout, stderr) = cmdQuery([fullpath], env=newenv, cwd=os.path.dirname(fullpath))
+  File "/home/kqinfo/KQTest/lib/KQTest.py", line 178, in cmdQuery
+    proc = subprocess.Popen(args, bufsize, executable, stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd, env, universal_newlines, startupinfo, creationflags)
+  File "/opt/python-2.7.1/lib/python2.7/subprocess.py", line 672, in __init__
+    errread, errwrite)
+  File "/opt/python-2.7.1/lib/python2.7/subprocess.py", line 1202, in _execute_child
+    raise child_exception
+OSError: [Errno 2] No such file or directory
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_reservation.test_reservation</td>
+    <td>9</td>
+    <td>9</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c12',9)">Detail</a></td>
+</tr>
+
+<tr id='pt12.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_004_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_005_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_006_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.7' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_007_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.8' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_011_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt12.9' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reservation_014_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_large_files.test_large_files</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c13',1)">Detail</a></td>
+</tr>
+
+<tr id='pt13.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_large_files_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_trucate.test_truncate</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c14',1)">Detail</a></td>
+</tr>
+
+<tr id='pt14.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_truncate_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_cache.test_cache</td>
+    <td>7</td>
+    <td>7</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c15',7)">Detail</a></td>
+</tr>
+
+<tr id='pt15.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cache_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt15.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cache_004_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt15.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cache_005_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt15.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cache_006_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt15.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cache_007_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt15.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cache_008_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt15.7' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cache_009_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_nestedfs.test_nestedfs</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c16',1)">Detail</a></td>
+</tr>
+
+<tr id='pt16.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_nestedfs_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_clean_mirror.test_clean_mirror</td>
+    <td>4</td>
+    <td>4</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c17',4)">Detail</a></td>
+</tr>
+
+<tr id='pt17.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_clean_mirror_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt17.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_clean_mirror_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt17.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_clean_mirror_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt17.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_clean_mirror_004_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='failClass'>
+    <td>STF.test_online_offline.test_online_offline</td>
+    <td>3</td>
+    <td>1</td>
+    <td>2</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c18',3)">Detail</a></td>
+</tr>
+
+<tr id='ft18.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_online_offline_001_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.1')" >
+        fail</a>
+
+    <div id='div_ft18.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft18.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft18.1: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_online_offline.py", line 32, in test_online_offline_001_pos
+    lib.STFwrap.runScriptArgs(self, ["/online_offline/online_offline_001_pos.ksh", disk, disk1])
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 49, in runScriptArgs
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+AssertionError: ret: 1
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft18.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_online_offline_002_neg</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.2')" >
+        fail</a>
+
+    <div id='div_ft18.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft18.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft18.2: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_online_offline.py", line 37, in test_online_offline_002_neg
+    lib.STFwrap.runScriptArgs(self, ["/online_offline/online_offline_002_neg.ksh", disk, disk1])
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 49, in runScriptArgs
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+AssertionError: ret: 1
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='pt18.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_online_offline_003_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_cachefile.test_cachefile_pool</td>
+    <td>3</td>
+    <td>3</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c19',3)">Detail</a></td>
+</tr>
+
+<tr id='pt19.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cachefile_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt19.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cachefile_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt19.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cachefile_004_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_scrub_mirror.test_scrub_mirror</td>
+    <td>4</td>
+    <td>4</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c20',4)">Detail</a></td>
+</tr>
+
+<tr id='pt20.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_scrub_mirror_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt20.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_scrub_mirror_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt20.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_scrub_mirror_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt20.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_scrub_mirror_004_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='failClass'>
+    <td>STF.test_slog.test_slog</td>
+    <td>14</td>
+    <td>11</td>
+    <td>3</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c21',14)">Detail</a></td>
+</tr>
+
+<tr id='pt21.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_004_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_005_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_006_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.7' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_007_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.8' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_008_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.9' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_009_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.10' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_010_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt21.11' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_slog_011_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft21.12' class='none'>
+    <td class='failCase'><div class='testcase'>test_slog_012_neg</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.12')" >
+        fail</a>
+
+    <div id='div_ft21.12' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.12').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft21.12: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_slog.py", line 64, in test_slog_012_neg
+    lib.STFwrap.runScript(self, "/slog/slog_012_neg")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 39, in runScript
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+AssertionError: ret: 127
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft21.13' class='none'>
+    <td class='failCase'><div class='testcase'>test_slog_013_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.13')" >
+        fail</a>
+
+    <div id='div_ft21.13' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.13').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft21.13: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_slog.py", line 67, in test_slog_013_pos
+    lib.STFwrap.runScript(self, "/slog/slog_013_pos")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 39, in runScript
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+AssertionError: ret: 127
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft21.14' class='none'>
+    <td class='failCase'><div class='testcase'>test_slog_014_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.14')" >
+        fail</a>
+
+    <div id='div_ft21.14' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.14').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft21.14: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_slog.py", line 70, in test_slog_014_pos
+    lib.STFwrap.runScript(self, "/slog/slog_014_pos")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 39, in runScript
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+AssertionError: ret: 127
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='failClass'>
+    <td>STF.test_refreserv.test_refreserv</td>
+    <td>5</td>
+    <td>4</td>
+    <td>1</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c22',5)">Detail</a></td>
+</tr>
+
+<tr id='pt22.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_refreserv_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt22.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_refreserv_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt22.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_refreserv_003_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft22.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_refreserv_004_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.4')" >
+        fail</a>
+
+    <div id='div_ft22.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft22.4: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_refreserv.py", line 44, in test_refreserv_004_pos
+    lib.STFwrap.runScript(self, "/refreserv/refreserv_004_pos.ksh")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 37, in runScript
+    self.assertNotIn("ERROR:", stdout, "got:: " + stdout)
+AssertionError: got:: ASSERTION: Verify refreservation is limited by available space.
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank/zfs/subfs
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank/zfs/subfs
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set quota=25M tank
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set quota=25M tank
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set refreservation=15M tank
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set refreservation=15M tank
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set refreservation=10354176 tank/zfs/subfs
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set refreservation=10354176 tank/zfs/subfs
+args to log_pos : /bin/dd if=/dev/zero of=/tank/zfs/subfs/test_file bs=10354176 count=1
+ERROR: /bin/dd if=/dev/zero of=/tank/zfs/subfs/test_file bs=10354176 count=1 exited 1
+NOTE: Performing local cleanup via log_onexit (cleanup)
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set refreservation=none tank
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set refreservation=none tank
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs destroy -rf tank/zfs
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs destroy -rf tank/zfs
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank/zfs
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs create tank/zfs
+args to log_pos : /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank/zfs tank/zfs
+SUCCESS: /home/kqinfo/ZFS_GA//zfs/cmd/zfs/zfs set mountpoint=/tank/zfs tank/zfs
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='pt22.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_refreserv_005_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_userquota.test_userquota</td>
+    <td>9</td>
+    <td>9</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c23',9)">Detail</a></td>
+</tr>
+
+<tr id='pt23.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_groupspace_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_groupspace_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_userquota_005_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_userquota_006_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_userquota_007_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_userquota_008_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.7' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_userquota_012_neg</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.8' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_userspace_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.9' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_userspace_002_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='failClass'>
+    <td>STF.test_no_space.test_no_space</td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c24',1)">Detail</a></td>
+</tr>
+
+<tr id='ft24.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_no_space__001_pos</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.1')" >
+        fail</a>
+
+    <div id='div_ft24.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft24.1: Traceback (most recent call last):
+  File "/home/kqinfo/KQTest/test/STF/test_no_space.py", line 35, in test_no_space__001_pos
+    lib.STFwrap.runScript(self, "/no_space/enospc_001_pos.ksh")
+  File "/home/kqinfo/KQTest/lib/STFwrap.py", line 39, in runScript
+    self.assertEqual(ret, retcheck, "ret: " + str(ret))
+AssertionError: ret: 1
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_grow_pool.test_grow_pool</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c25',1)">Detail</a></td>
+</tr>
+
+<tr id='pt25.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_grow_pool_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>STF.test_ctime.test_ctime</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c26',1)">Detail</a></td>
+</tr>
+
+<tr id='pt26.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_ctime_001_pos</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='total_row'>
+    <td>Total</td>
+    <td>85</td>
+    <td>72</td>
+    <td>11</td>
+    <td>2</td>
+    <td>&nbsp;</td>
+</tr>
+</table>
+
+<div id='ending'>&nbsp;</div>
+
+</body>
+</html>

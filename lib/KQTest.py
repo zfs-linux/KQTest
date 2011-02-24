@@ -39,7 +39,6 @@ moduleUnloadList = ["lzfs", "zfs", "zunicode", "zcommon", "zavl", "znvpair", "sp
 # per Thread local store
 threadLocal = threading.local()
 
-
 # Global Anchor for all the resources
 allResources = None
 
@@ -170,6 +169,7 @@ def printLog(msg):
     threadLocal.logfd.flush()
 
 def cmdQuery(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0, dmesg=True):
+#    threadLocal = threading.local()
     logfd = threadLocal.logfd
     stdin = devnull
     stdout = subprocess.PIPE
@@ -184,6 +184,7 @@ def cmdQuery(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=N
 
 def cmdLog(args, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0, dmesg=True):
     stdin=devnull
+#    threadLocal = threading.local()
     logfd = threadLocal.logfd
     stdout=logfd
     stderr=logfd
