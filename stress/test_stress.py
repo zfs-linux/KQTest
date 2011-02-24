@@ -28,16 +28,26 @@ class test_stress(unittest.TestCase):
         while True:
             i = gen.next()
             (count, total, test) = i
-            print THREADS
-            print RUN_ONLY
-            if threading.active_count() >= int(THREADS):
+            if threading.active_count() > int(THREADS):
                 time.sleep(1)
                 continue
             if int(RUN_ONLY) != 0 and count > int(RUN_ONLY):
                 break
-            print str(count) +"/"+str(total)
+            print str(count) +"/"+str(total) +"          \r",
+            for thrds in  threading.enumerate():
+                if not thrds.is_alive():
+                    thrds.join()
+                if thrds.retval == -1:
+                    printLog("Stress-failed cmd: " + thrds.cmdrun())
+                    raise Exception("stress failed")
             test.start()
+
         while threading.active_count() != 1:
             time.sleep(1)
         gen.close()
         name.close()
+import threading
+
+class testthr(threading.Thread):
+    def run(self):
+        print("in test dir")
