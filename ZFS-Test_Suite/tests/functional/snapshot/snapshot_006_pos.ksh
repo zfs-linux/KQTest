@@ -75,8 +75,8 @@ function cleanup
                 log_must $ZFS destroy $SNAPFS
         fi
 
-        if [[ -e $SNAPDIR ]]; then
-                log_must $RM -rf $SNAPDIR > /dev/null 2>&1
+        if [[ -e $SNAPDIR/$TESTSNAP ]]; then
+                log_must $RM -rf $SNAPDIR/$TESTSNAP > /dev/null 2>&1
         fi
 
         if [[ -e $TESTDIR ]]; then
@@ -123,8 +123,8 @@ log_must $RM -f $TESTDIR/file* > /dev/null 2>&1
 
 log_note "Create tarball of snapshot..."
 CWD=`pwd`
-cd $SNAPDIR || log_fail "Could not cd $SNAPDIR"
-log_must $TAR cf $TESTDIR/tarball.snapshot.tar file*
+cd $SNAPDIR/$TESTSNAP || log_fail "Could not cd $SNAPDIR/$TESTSNAP"
+log_must $TAR -cf $TESTDIR/tarball.snapshot.tar file*
 cd $CWD || log_fail "Could not cd $CWD"
 
 log_must $MKDIR $TESTDIR/original
@@ -138,7 +138,7 @@ cd $TESTDIR/snapshot || log_fail "Could not cd $TESTDIR/snapshot"
 log_must $TAR xf $TESTDIR/tarball.snapshot.tar
 
 cd $CWD || log_fail "Could not cd $CWD"
-DIRCMP=$DIFF
+DIRCMP=$CMP
 $DIRCMP $TESTDIR/original $TESTDIR/snapshot > /tmp/zfs_snapshot2.$$
 $GREP different /tmp/zfs_snapshot2.$$ >/dev/null 2>&1
 if [[ $? -ne 1 ]]; then

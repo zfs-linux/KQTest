@@ -75,8 +75,8 @@ function cleanup
                 log_must $ZFS destroy $SNAPFS
         fi
 
-        if [[ -e $SNAPDIR ]]; then
-                log_must $RM -rf $SNAPDIR > /dev/null 2>&1
+        if [[ -e $SNAPDIR/$TESTSNAP ]]; then
+                log_must $RM -rf $SNAPDIR/$TESTSNAP > /dev/null 2>&1
         fi
 
         if [[ -e $TESTDIR ]]; then
@@ -110,7 +110,7 @@ while [ $i -lt $COUNT ]; do
 done
 
 log_note "Create a tarball from $TESTDIR contents..."
-CWD=$PWD
+CWD=`$PWD`
 cd $TESTDIR || log_fail "Could not cd $TESTDIR"
 log_must $TAR cf $TESTDIR/tarball.original.tar file*
 #echo $CWD
@@ -123,15 +123,15 @@ log_note "Remove all of the original files..."
 log_must $RM -f $TESTDIR/file* > /dev/null 2>&1
 
 log_note "Create tarball of snapshot..."
-CWD=$PWD
-cd $SNAPDIR || log_fail "Could not cd $SNAPDIR"
+CWD=`pwd`
+cd $SNAPDIR/$TESTSNAP || log_fail "Could not cd $SNAPDIR/$TESTSNAP"
 log_must $TAR cf $TESTDIR/tarball.snapshot.tar file*
 cd $CWD || log_fail "Could not cd $CWD"
 
 log_must $MKDIR $TESTDIR/original
 log_must $MKDIR $TESTDIR/snapshot
 
-CWD=$PWD
+CWD=`pwd`
 cd $TESTDIR/original || log_fail "Could not cd $TESTDIR/original"
 log_must $TAR xf $TESTDIR/tarball.original.tar
 
@@ -139,7 +139,7 @@ cd $TESTDIR/snapshot || log_fail "Could not cd $TESTDIR/snapshot"
 log_must $TAR xf $TESTDIR/tarball.snapshot.tar
 
 cd $CWD || log_fail "Could not cd $CWD"
-
+DIRCMP=$CMP
 $DIRCMP $TESTDIR/original $TESTDIR/snapshot > /tmp/zfs_snapshot2.$$
 $GREP different /tmp/zfs_snapshot2.$$ >/dev/null 2>&1
 if [[ $? -ne 1 ]]; then

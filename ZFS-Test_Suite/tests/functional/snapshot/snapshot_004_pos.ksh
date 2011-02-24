@@ -77,10 +77,10 @@ log_onexit cleanup
     log_must $RM -rf $TESTDIR/* > /dev/null 2>&1
 
 log_must $ZFS snapshot $SNAPFS
-FILE_COUNT=`$LS -Al $SNAPDIR | $GREP -v "total 0" | wc -l`
+FILE_COUNT=`$LS -Al $SNAPDIR/$TESTSNAP | $GREP -v "total 0" | wc -l`
 if [[ $FILE_COUNT -ne 0 ]]; then
-	$LS $SNAPDIR
-	log_fail "BEFORE: $SNAPDIR contains $FILE_COUNT files(s)."
+	$LS $SNAPDIR/$TESTSNAP
+	log_fail "BEFORE: $SNAPDIR/$TESTSNAP contains $FILE_COUNT files(s)."
 fi
 
 typeset -i COUNT=10
@@ -94,10 +94,10 @@ while [[ $i -lt $COUNT ]]; do
 	(( i = i + 1 ))
 done
 
-FILE_COUNT=`$LS -Al $SNAPDIR | $GREP -v "total 0" | wc -l`
+FILE_COUNT=`$LS -Al $SNAPDIR/$TESTSNAP | $GREP -v "total 0" | wc -l`
 if [[ $FILE_COUNT -ne 0 ]]; then
-        $LS $SNAPDIR
-        log_fail "AFTER: $SNAPDIR contains $FILE_COUNT files(s)."
+        $LS $SNAPDIR/$TESTSNAP
+        log_fail "AFTER: $SNAPDIR/$TESTSNAP contains $FILE_COUNT files(s)."
 fi
 
 log_pass "The NULL snapshot remains empty."
