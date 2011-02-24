@@ -26,8 +26,10 @@
 #
 # ident	"@(#)snapshot_014_pos.ksh	1.2	07/01/09 SMI"
 #
+. $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
-
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 ################################################################################
 #
 # __stc_assertion_start
@@ -72,17 +74,23 @@ function cleanup
 log_assert "Verify creating/destroying snapshots do things clean"
 log_onexit cleanup
 
+log_must $ZFS create $TESTPOOL/$TESTCTR
+log_must $ZFS create $TESTPOOL/$TESTCTR/$TESTFS1
 log_must $ZFS set quota=$FSQUOTA $TESTPOOL/$TESTCTR/$TESTFS1
-log_must $MKFILE $FILESIZE $TESTDIR1/$TESTFILE
+#log_must $MKFILE $FILESIZE $TESTDIR1/$TESTFILE
+
+log_must $DD if=/dev/zero of=$TESTDIR/$TESTFILE bs=$FILESIZE count=1
 
 log_must $ZFS snapshot $SNAPCTR
 log_must $ZFS destroy $SNAPCTR
 
 log_note "Make the quota of filesystem is reached"
-log_mustnot $MKFILE $FILESIZE1 $TESTDIR1/$TESTFILE1
+#log_mustnot $MKFILE $FILESIZE1 $TESTDIR1/$TESTFILE1
+
+log_mustnot $DD if=/dev/zero/ of=$TESTDIR/$TESTFILE1 bs=1M count=$FILESIZE
 
 log_note "Verify removing the first file should succeed after the snapshot is \
 	removed"
-log_must $RM $TESTDIR1/$TESTFILE
+log_must $RM $TESTDIR/$TESTFILE
 
 log_pass "Verify creating/destroying snapshots do things clean"
