@@ -1,4 +1,4 @@
-#!/usr/bin/ksh -p
+#!/bin/ksh -p
 #
 # CDDL HEADER START
 #
@@ -27,7 +27,11 @@
 # ident	"@(#)snapshot_017_pos.ksh	1.1	08/08/15 SMI"
 #
 
+
+. $STF_SUITE/commands.cfg
 . $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/tests/functional/snapshot/snapshot.cfg
 
 ################################################################################
 #
@@ -74,10 +78,37 @@ function cleanup
 	log_must $ZFS set mountpoint=$TESTDIR $TESTPOOL/$TESTFS
 }
 
+function verify_file {
+	if [ ! -e $1 ]
+	then
+		log_note "Working dir is $PWD"
+		log_fail "File $1 does not exist!"
+	fi
+}
+
+function verify_no_file {
+	if [ -e $1 ]
+	then
+		echo "******* in verify_file "
+		log_note "Working dir is $PWD"
+		log_fail "File $1 exists when it should not!"
+	fi
+}
+
+function verify_dir {
+	if [ ! -d $1 ]
+	then
+		log_note "Working dir is $PWD"
+		log_fail "Directory $1 does not exist!"
+	fi
+}
+
 function verify_structure {
 
 	# check absolute paths
+	
 	DIR=$PWD
+	
 	verify_file $DIR/file1
 	verify_file $DIR/file2
 	verify_file $DIR/dir1/file3
@@ -115,35 +146,10 @@ function verify_structure {
 	verify_no_file ../../file99
 }
 
-function verify_file {
-	if [ ! -e $1 ]
-	then
-		log_note "Working dir is $PWD"
-		log_fail "File $1 does not exist!"
-	fi
-}
-
-function verify_no_file {
-	if [ -e $1 ]
-	then
-		log_note "Working dir is $PWD"
-		log_fail "File $1 exists when it should not!"
-	fi
-}
-
-function verify_dir {
-	if [ ! -d $1 ]
-	then
-		log_note "Working dir is $PWD"
-		log_fail "Directory $1 does not exist!"
-	fi
-}
-
 log_assert "Directory structure of snapshots reflects filesystem structure."
 log_onexit cleanup
 
-SAVED_DIR=$PWD
-
+SAVED_DIR=`$PWD`
 #
 # Create a directory structure with the following files
 #
@@ -155,16 +161,25 @@ SAVED_DIR=$PWD
 # ./dir1/dir2/file6
 
 cd $TESTDIR
-$MKFILE 10m file1
-$MKFILE 20m file2
+#$MKFILE 10m file1
+$DD if=/dev/zero of=file1 bs=10M count=1
+#$MKFILE 20m file2
+$DD if=/dev/zero of=file2 bs=20M count=1
 $MKDIR dir1
 cd dir1
-$MKFILE 10m file3
-$MKFILE 20m file4
+#$MKFILE 10m file3
+$DD if=/dev/zero of=file3 bs=30M count=1
+
+#$MKFILE 20m file4
+$DD if=/dev/zero of=file4 bs=20M count=1
+
 $MKDIR dir2
 cd dir2
-$MKFILE 10m file5
-$MKFILE 20m file6
+#$MKFILE 10m file5
+$DD if=/dev/zero of=file5 bs=10M count=1
+
+#$MKFILE 20m file6
+$DD if=/dev/zero of=file6 bs=20M count=1
 
 # Now walk the directory structure verifying it
 cd $TESTDIR
