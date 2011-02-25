@@ -189,3 +189,4 @@ for type in "" "raidz" "raidz1"; do
 	done
 done
 
+log_pass "Replacing a disk during I/O completes."

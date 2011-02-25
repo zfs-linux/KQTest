@@ -175,4 +175,4 @@ for type in "" "raidz" "raidz1" ; do
 
 	destroy_pool $TESTPOOL1
 done
-
+log_pass "Detaching disks during I/O should pass for supported pools."

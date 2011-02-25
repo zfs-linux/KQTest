@@ -129,7 +129,6 @@ function replace_test
 		$KILL $wait_pid
 	done
 	child_pids=""
-        
 	log_must $ZPOOL export $TESTPOOL1
         log_must $ZPOOL import -d $TESTDIR $TESTPOOL1
 	log_must $ZFS umount $TESTPOOL1/$TESTFS1
@@ -168,4 +167,4 @@ for type in  "raidz" "raidz1"  "mirror"; do
 	done
 done
 
-#log_pass
+log_pass "Replacing a disk during I/O completes."
