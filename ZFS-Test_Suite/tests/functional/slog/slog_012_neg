@@ -26,7 +26,10 @@
 #
 # ident	"@(#)slog_012_neg.ksh	1.1	07/07/31 SMI"
 #
-
+. $STF_SUITE/commands.cfg
+. $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+. $STF_SUITE/tests/functional/slog/slog.cfg
 . $STF_SUITE/tests/functional/slog/slog.kshlib
 
 #################################################################################
@@ -69,10 +72,11 @@ do
 		#
 		# Create file in pool to trigger writting in slog devices
 		#
-		log_must $DD if=/dev/random of=$mntpnt/testfile.$$ count=100 bs=1
+		log_must $DD if=/dev/urandom of=$mntpnt/testfile.$$ bs=1 count=100
 
 		ldev=$(random_get $LDEV)
-		log_must $MKFILE $SIZE $ldev
+		#log_must $MKFILE $SIZE $ldev
+		log_must $DD if=/dev/urandom of=$ldev bs=1M count=$SIZE
 		log_must $ZPOOL scrub $TESTPOOL
 
 		log_must display_status $TESTPOOL
