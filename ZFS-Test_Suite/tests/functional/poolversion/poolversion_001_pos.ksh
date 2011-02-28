@@ -29,10 +29,9 @@
 
 
 . $STF_SUITE/include/libtest.kshlib
-. $STF_SUITE/default.cfg
 . $STF_SUITE/commands.cfg
 . $STF_TOOLS/contrib/include/logapi.kshlib
-
+. $STF_SUITE/include/default_common_varible.kshlib
 
 ################################################################################
 #

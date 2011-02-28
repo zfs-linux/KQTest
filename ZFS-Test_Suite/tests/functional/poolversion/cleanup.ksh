@@ -1,4 +1,4 @@
-#!/usr/bin/ksh -p
+#!/bin/ksh -p
 #
 # CDDL HEADER START
 #
@@ -27,20 +27,23 @@
 # ident	"@(#)cleanup.ksh	1.1	07/10/09 SMI"
 #
 
-. ${STF_SUITE}/include/libtest.kshlib
 
-verify_runnable "global"
+. $STF_SUITE/include/libtest.kshlib
+. $STF_SUITE/commands.cfg
+. $STF_TOOLS/contrib/include/logapi.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
+
 
 $ZPOOL set 2>&1 | $GREP version > /dev/null
 if [ $? -eq 1 ]
 then
 	log_unsupported "zpool version property not supported on this system."
 fi
-
+TESTPOOL2=tank2
 log_must $ZPOOL destroy $TESTPOOL
 log_must $ZPOOL destroy $TESTPOOL2
 
 log_must $RM /tmp/zpool_version_1.dat
-log_must $RM /tmp/zpool2_version_1.dat
+log_must $RM /tmp/zpool_version_2.dat
 
 default_cleanup

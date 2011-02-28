@@ -28,9 +28,9 @@
 #
 
 . $STF_SUITE/include/libtest.kshlib
-. $STF_SUITE/default.cfg
 . $STF_SUITE/commands.cfg
 . $STF_TOOLS/contrib/include/logapi.kshlib
+. $STF_SUITE/include/default_common_varible.kshlib
 #verify_runnable "global"
 
 $ZPOOL set 2>&1 | $GREP version > /dev/null
@@ -41,15 +41,14 @@ fi
 
 # create a version 1 pool
 #log_must $MKFILE 64m /tmp/zpool_version_1.dat
-log_must dd if=/dev/zero of=$1 bs=2M count=32
+log_must dd if=/dev/zero of=/tmp/zpool_version_1.dat bs=2M count=32
 #log_must $ZPOOL create -o version=1 $TESTPOOL /tmp/zpool_version_1.dat
-log_must $ZPOOL create -o version=1 $TESTPOOL $1
-
-
+log_must $ZPOOL create -o version=1 $TESTPOOL /tmp/zpool_version_1.dat
+TESTPOOL2=tank2
 # create another version 1 pool
 #log_must $MKFILE 64m /tmp/zpool2_version_1.dat
-log_must dd if=/dev/zero of=$2 bs=2M count=32
+log_must dd if=/dev/zero of=/tmp/zpool_version_2.dat bs=2M count=32
 #log_must $ZPOOL create -o version=1 $TESTPOOL2 /tmp/zpool2_version_1.dat
-log_must $ZPOOL create -o version=1 $TESTPOOL2 $2
+log_must $ZPOOL create -o version=1 $TESTPOOL2 /tmp/zpool_version_2.dat
 
 log_pass
