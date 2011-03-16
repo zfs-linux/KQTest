@@ -46,7 +46,6 @@ allResources = None
 # by default assume it is in the path in standard system location
 cmdzpool = "zpool"
 cmdzfs   = "zfs"
-
 # devnull file for all our commands
 devnull = open("/dev/null","rw")
 
@@ -510,32 +509,17 @@ class buildSetup():
             globals()["cmdzpool"] = buildpath + "/zfs/cmd/zpool/zpool"
             globals()["cmdzfs"] = buildpath + "/zfs/cmd/zfs/zfs"
         # generate the command.cfg file for STF
-        cmdcfg = open(KQTest+"/ZFS-Test_Suite/commands.cfg", "w")
+        cmdcfg = open(KQTest+"/lib/all_commands.py", "w")
         for i in cmdlist.keys():
             stdout = subprocess.PIPE
             proc = subprocess.Popen(["which", i], stdout=stdout,stderr=devnull)
             (stdout, stderr) = proc.communicate()
             stdout = stdout.split('\n')[0]
             if proc.returncode == 0:
-                cmdcfg.write("export "+cmdlist[i] +"="+ stdout+"\n")
+                cmdcfg.write(cmdlist[i] +"=\""+ stdout+"\"\n")
             else:
                 raise Exception("command " + i + " not found, please install")
-        cmdcfg.write("export ZFS=${ZFSBUILDPATH}/zfs/cmd/zfs/zfs\n\
-export ZPOOL=${ZFSBUILDPATH}zfs/cmd/zpool/zpool\nexport WAIT=wait\nexport CMDS=\"\
-$AWK $ARP $BASENAME $CAT $CD $CHGRP $CHMOD $CHOWN $CKSUM $CLRI $CMP $COMPRESS \
- $UNCOMPRESS $COREADM $CP $CPIO $CUT $DATE $DD $DEVFSADM $DF $DIFF $DIRCMP \
- $DIRNAME $DU $DUMPADM $ECHO $EGREP $ENV $FDISK $FF $FGREP $FILE $FIND $FMADM \
- $FMDUMP $FORMAT $FSCK $FSDB $FSIRAND $FSTYP $ID $ISAINFO $ISCSIADM $ISCSITADM \
- $GETENT $GREP $GROUPS $GROUPADD $GROUPDEL $GROUPMOD $HEAD $HOSTNAME $KILL $KSH \
- $LABELIT $LOCKFS $LOFIADM $LS $LOGNAME $MDB $METACLEAR $METADB $METAINIT \
- $METASTAT $MKDIR $MKFILE $MKNOD $MODINFO $MODUNLOAD $MOUNT $MV $NCHECK $NEWFS \
- $NAWK $PACK $PAGESIZE $PAX $PING $PRINTF $PFEXEC $PGREP $PKGINFO $PKILL $PS \
- $PSRINFO $PWD $QUOTAON $RCP $REBOOT $RM $RMDIR $RSH $RUNAT $SED $SHARE $SLEEP \
- $SU $SUM $SVCS $SVCADM $SWAP $SWAPADD $SORT $STRINGS $SYNC $TAR $TAIL $TOUCH \
- $TR $TRUE $TUNEFS $UFSDUMP $UFSRESTORE $UMASK $UMOUNT $UNAME $UNIQ $UNSHARE \
- $UNPACK $USERADD $USERDEL $USERMOD $WAIT $WC $ZONEADM $ZONECFG $ZLOGIN \
- $ZONENAME $ZDB $RUNWATTR $ZFS $ZPOOL\"\
-")
+        cmdcfg.write("ZFS=\"" + buildpath + "zfs/cmd/zfs/zfs\"\nZPOOL=\"" + buildpath + "zfs/cmd/zpool/zpool\"\nWAIT=\"wait\"")
     
     def load(self):
         self.unload(False)
