@@ -16,10 +16,10 @@
 
 import os
 import sys
-#sys.path.append("/home/kqinfo/KQTest/lib")
 sys.path.append("../../../../lib")
 from libtest import *
 from common_variable import *
+
 if not os.geteuid()==0:
 	sys.exit("\nOnly root can run this script\n")
 

@@ -16,7 +16,6 @@
 
 import os
 import sys
-#sys.path.append("/home/kqinfo/KQTest/lib")
 sys.path.append("../../../../lib")
 from libtest import *
 from common_variable import *

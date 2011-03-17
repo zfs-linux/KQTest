@@ -33,11 +33,7 @@ BLOCK_SIZE="8192"
 # the size of the disk, and also slow down the test
 # which involves filling until ENOSPC
 #
-SIZE="100mb"
-SLICE="0"
-SLICE0="0"
-SLICE1="1"
 SMALL_WRITE_COUNT="100"
 TESTFILE1="file"+str(os.getpid())+".1"
 WRITE_COUNT="65536000"
-FILE_WRITE="/home/kqinfo/KQTest/ZFS-Test_Suite/bin/file_write"
+FILE_WRITE="../../../bin/file_write"

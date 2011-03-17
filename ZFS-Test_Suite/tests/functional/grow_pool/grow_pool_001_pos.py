@@ -14,18 +14,6 @@
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
 # License for more details.
 
-import os
-import sys
-import os.path
-sys.path.append("../../../../lib")
-from libtest import *
-from logapi import *
-from default_common_varible import *
-from common_variable import *
-sys.path.append("/home/kqinfo/KQTest/ZFS-Test_Suite/tests/functional/grow_pool")
-from grow_pool_cfg import *
-# __stc_assertion_start
-#
 # ID: grow_pool_001_pos
 #
 # DESCRIPTION:
@@ -49,6 +37,16 @@ from grow_pool_cfg import *
 ################################################################################
 
 #verify_runnable "global"
+
+import os
+import sys
+sys.path.append("../../../../lib")
+from libtest import *
+from logapi import *
+from common_variable import *
+from grow_pool_cfg import *
+
+
 
 #log_assert "A zpool may be increased in capacity by adding a disk"
 if not os.geteuid()==0:
