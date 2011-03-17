@@ -17,12 +17,15 @@ the STF test cases with the python harness.
 
 Eventually everything will be part of the python and this wrapper will go away
 but for the interim this is required."""
+
+
 from KQTest import *
-from logapi_sh import *
 import os
 import subprocess
 import sys
-#sys.exit()
+
+STF_PASS=0
+STF_FAIL=1
 SUCCESS = 0
 FAIL = 1
 

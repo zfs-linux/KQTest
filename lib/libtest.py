@@ -1,8 +1,7 @@
 import sys
 import os
-#import subprocess
-sys.path.append("/home/kqinfo/KQTest/lib")
-#from libtest import *
+
+
 from logapi import *
 from common_variable import *
 from all_commands import *

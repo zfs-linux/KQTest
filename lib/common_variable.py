@@ -9,3 +9,7 @@ TESTFS2="zfs2"
 TESTDIR="/tank/zfs"
 TESTDIR1="/tank1/zfs1"
 
+
+TESTFILE="test_file"
+TESTFILE1="test_file1"
+
