@@ -12,18 +12,18 @@ class test_ctime(unittest.TestCase):
         self.d1 = self.host.getDisk()
         disk = self.d1[0].diskname
         (newenv, path) = lib.STFwrap.setupEnv()
-        (ret, stdout, stderr) = cmdQuery([path + "/ctime/setup" , disk], env=newenv, cwd=path+"/ctime")
+        (ret, stdout, stderr) = cmdQuery([path + "/ctime/setup.py" , disk], env=newenv, cwd=path+"/ctime")
         self.assertEqual(ret, 0, "setup failed")
         self.assertNotIn("ERROR:", stdout, "setup failed")
         self.assertNotIn("ERROR:", stderr, "setup failed")
         
     def cleanup(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        cmdQuery([path + "/ctime/cleanup"], env=newenv, cwd=path+"/ctime")
+        cmdQuery([path + "/ctime/cleanup.py"], env=newenv, cwd=path+"/ctime")
 
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        (ret, stdout, stderr) = cmdQuery([path + "/ctime/cleanup"], env=newenv, cwd=path+"/ctime")
+        (ret, stdout, stderr) = cmdQuery([path + "/ctime/cleanup.py"], env=newenv, cwd=path+"/ctime")
         self.assertNotIn("ERROR:", stdout, "setup failed")
         self.assertNotIn("ERROR:", stderr, "setup failed")
         self.cleanup()
