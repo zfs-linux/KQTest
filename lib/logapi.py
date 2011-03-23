@@ -18,6 +18,8 @@ the STF test cases with the python harness.
 Eventually everything will be part of the python and this wrapper will go away
 but for the interim this is required."""
 
+# This is a ksh function library. It is intended to be sourced into
+# other ksh scripts and not executed directly.
 
 from KQTest import *
 import os
@@ -28,6 +30,8 @@ STF_PASS=0
 STF_FAIL=1
 SUCCESS = 0
 FAIL = 1
+STF_UNSUPPORTED=4
+STF_UNRESOLVED=5
 
 def log_pos(command):
     print "args to logmust :",
@@ -44,6 +48,7 @@ def log_pos(command):
          count = count + 1
     data, err = process1.communicate()
     statuscode =  process1.wait()
+    print "status==",statuscode
     if statuscode != SUCCESS:
       _printerror(command)
     else:
@@ -73,6 +78,14 @@ def log_must(command):
     if ret != 0:
        log_fail("")
 
+def log_assert(command):
+    _printline("ASSERTION :"+command)    
+
+def log_note(command):
+    _printline("NOTE :"+command)
+
+def _printline(command):
+    print command
 
 def _printerror(command):
     print "ERROR: ",command
@@ -84,10 +97,15 @@ def log_fail(str):
     _endlog(STF_FAIL,str)
 
 
-def _endlog(STF_FAIL,str):
+def _endlog(STF_val,str):
     print str
-    sys.exit(STF_FAIL)
+    sys.exit(STF_val)
 
 def log_pass(str):
     _endlog(STF_PASS,str)
 
+def log_unsupported(str):
+    _endlog(STF_UNSUPPORTED,str)
+
+def log_unresolved(str):
+   _endlog(STF_UNRESOLVED,str)

@@ -519,7 +519,7 @@ class buildSetup():
                 cmdcfg.write(cmdlist[i] +"=\""+ stdout+"\"\n")
             else:
                 raise Exception("command " + i + " not found, please install")
-        cmdcfg.write("ZFS=\"" + buildpath + "zfs/cmd/zfs/zfs\"\nZPOOL=\"" + buildpath + "zfs/cmd/zpool/zpool\"\nWAIT=\"wait\"")
+        cmdcfg.write("ZFS=\"" + buildpath + "zfs/cmd/zfs/zfs\"\nZPOOL=\"" + buildpath + "zfs/cmd/zpool/zpool\"\nWAIT=\"wait\"\nZDB=\"" + buildpath + "zfs/cmd/zdb/zdb\"")
 
        # generate the command.cfg file for STF(to run ksh script)
         cmdcfg = open(KQTest+"/ZFS-Test_Suite/commands.cfg", "w")
@@ -533,7 +533,7 @@ class buildSetup():
             else:
                 raise Exception("command " + i + " not found, please install")
         cmdcfg.write("export ZFS=${ZFSBUILDPATH}/zfs/cmd/zfs/zfs\n\
-export ZPOOL=${ZFSBUILDPATH}zfs/cmd/zpool/zpool\nexport WAIT=wait\nexport CMDS=\"\
+export ZPOOL=${ZFSBUILDPATH}zfs/cmd/zpool/zpool\nexport WAIT=wait\nexport ZDB=${ZFSBUILDPATH}/zfs/cmd/zdb/zdb\nexport CMDS=\"\
 $AWK $ARP $BASENAME $CAT $CD $CHGRP $CHMOD $CHOWN $CKSUM $CLRI $CMP $COMPRESS \
  $UNCOMPRESS $COREADM $CP $CPIO $CUT $DATE $DD $DEVFSADM $DF $DIFF $DIRCMP \
  $DIRNAME $DU $DUMPADM $ECHO $EGREP $ENV $FDISK $FF $FGREP $FILE $FIND $FMADM \
