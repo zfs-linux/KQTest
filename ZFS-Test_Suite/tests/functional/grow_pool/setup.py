@@ -27,5 +27,5 @@ if len(sys.argv) not in [2] :
 	sys.exit("\nUsage : ./grow_pool_001_pos.ksh <diskname1>\n")
 
 
-default_setup_noexit(sys.argv[1])
+default_setup(sys.argv[1])
 
