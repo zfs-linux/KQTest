@@ -23,7 +23,7 @@ class test_compression(unittest.TestCase):
 
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        (ret, stdout, stderr) = cmdQuery([path + "/compression/cleanup.py"], env=newenv, cwd=path+"/compression")
+        (ret, stdout, stderr) = cmdQuery([path + "/compression/cleanup.ksh"], env=newenv, cwd=path+"/compression")
         self.assertNotIn("ERROR:", stdout, "setup failed")
         self.assertNotIn("ERROR:", stderr, "setup failed")
         self.cleanup()
