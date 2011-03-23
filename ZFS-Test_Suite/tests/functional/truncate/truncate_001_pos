@@ -99,7 +99,7 @@ typeset dir=$(get_device_dir $DISKS)
 
 echo " dir : $dir"
 
-
+echo "ZDB=$ZDB"
 verify_filesys "$TESTPOOL" "$TESTPOOL/$TESTFS" "$dir"
-
+echo "ZDB=$ZDB"
 log_pass "Random blocks have been truncated properly."

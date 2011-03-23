@@ -71,7 +71,7 @@ while getopts u: OPT ; do
 		;;
 	esac
 done
-
+echo "hiiiiii",unmountcmd
 log_note Mount file systems
 typeset -i i=1 
 for fs in $TESTFSS ; do

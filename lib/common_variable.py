@@ -13,3 +13,5 @@ TESTDIR1="/tank1/zfs1"
 TESTFILE="test_file"
 TESTFILE1="test_file1"
 
+TESTCTR="testctr"
+NO_POOLS="no pools available"

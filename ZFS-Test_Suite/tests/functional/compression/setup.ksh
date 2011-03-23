@@ -34,7 +34,7 @@
 . $STF_SUITE/STF/usr/src/tools/stf/contrib/include/logapi.kshlib
 
 DISK=$1
-
+echo "dir=$TESTDIR1"
 default_container_setup $DISK
 #default_setup $DISK
 

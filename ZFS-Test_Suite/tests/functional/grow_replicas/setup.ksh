@@ -29,7 +29,7 @@
 . $STF_SUITE/include/default_common_varible.kshlib
 . $STF_SUITE/include/libtest.kshlib
 . $STF_SUITE/commands.cfg
-. $STF_SUITE/tests/functional/grow_replicas/grow_replicas.cfg
+. $STF_SUITE/tests/functional/grow_replicas/original_grow_replicas.cfg
 
 #verify_runnable "global"
 DISK="$1"
@@ -39,8 +39,8 @@ DISK1=$2
 #fi
 log_note "Creating pool type: $POOLTYPE"
 
-
-if [[ -n $DISK2 ]]
+echo "DISK2=$DISK2"
+if [[ -n $DISK1 ]]
 then
         log_note "No spare disks available. Using slices on $DISK"
 	for i in $SLICE0 $SLICE1 $SLICE3 $SLICE4 ; do
@@ -54,8 +54,9 @@ else
 #        log_must set_partition $SLICE "" $SIZE $DISK1
 #        create_pool $TESTPOOL $POOLTYPE ${DISK0}s${SLICE} \
 #	    ${DISK1}s$SLICE
+         echo "hiiiiiiii"
+	 log_must zpool create  -f  $TESTPOOL $POOLTYPE $DISK $DISK1
 
-	 zpool create  -f  $TESTPOOL $POOLTYPE $DISK $DISK1
 fi
 
 
