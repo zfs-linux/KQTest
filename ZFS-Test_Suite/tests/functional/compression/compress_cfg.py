@@ -34,7 +34,7 @@ TESTCTR="testctr"
 TESTFILE0="testfile0."+str(os.getpid())
 TESTFILE1="testfile1."+str(os.getpid())
 
-RANDFREE_FILE="randfree_file"
+RANDFREE_FILE="./randfree_file"
 BLOCKSZ="8192"
 NUM_WRITES="65536"
 DATA="13"

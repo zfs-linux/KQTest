@@ -19,11 +19,11 @@ class test_compression(unittest.TestCase):
         
     def cleanup(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        cmdQuery([path + "/compression/cleanup.ksh"], env=newenv, cwd=path+"/compression")
+        cmdQuery([path + "/compression/cleanup.py"], env=newenv, cwd=path+"/compression")
 
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        (ret, stdout, stderr) = cmdQuery([path + "/compression/cleanup.ksh"], env=newenv, cwd=path+"/compression")
+        (ret, stdout, stderr) = cmdQuery([path + "/compression/cleanup.py"], env=newenv, cwd=path+"/compression")
         self.assertNotIn("ERROR:", stdout, "setup failed")
         self.assertNotIn("ERROR:", stderr, "setup failed")
         self.cleanup()
@@ -38,8 +38,8 @@ class test_compression(unittest.TestCase):
         lib.STFwrap.runScript(self, "/compression/compress_002_pos.py")
    
     def test_compress_003_pos(self):
-        lib.STFwrap.runScript(self, "/compression/compress_003_pos.ksh")
+        lib.STFwrap.runScript(self, "/compression/compress_003_pos.py")
    
     def test_compress_004_pos(self):
-        lib.STFwrap.runScript(self, "/compression/compress_004_pos.ksh")
+        lib.STFwrap.runScript(self, "/compression/compress_004_pos.py")
    
