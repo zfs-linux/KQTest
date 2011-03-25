@@ -48,12 +48,36 @@ def log_pos(command):
          count = count + 1
     data, err = process1.communicate()
     statuscode =  process1.wait()
-    print "status==",statuscode
+    print "STATUS CODE : ",statuscode
     if statuscode != SUCCESS:
       _printerror(command)
     else:
       _printsuccess(command)
     return (statuscode)
+
+
+def log_notpos(command):
+    print "args to log_mustnot :",
+    print command
+    length = len(command)
+    if length == 0:
+        return 0
+    process1 = subprocess.Popen(command[0],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+#    print process1.stdout 
+    count = 1
+    while ( count < length):
+         process2 = subprocess.Popen(command[count],stdin=process1.stdout,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+         process1 = process2
+         count = count + 1
+    data, err = process1.communicate()
+    statuscode =  process1.wait()
+    print "STATUS CODE : ",statuscode
+    if statuscode != SUCCESS:
+        _printsuccess(command)
+    else:
+        _printerror(command)
+    return (statuscode)
+
 
 def cmdExecute(command):
     print "args to cmdExecute :",
@@ -72,11 +96,37 @@ def cmdExecute(command):
     statuscode =  process1.wait()
     return (data, statuscode)
 
+def cmdExecute_on_stderr(command):
+    print "args to cmdExecute_on_stderr :",
+    print command
+    length = len(command)
+    if length == 0:
+        return 0
+    process1 = subprocess.Popen(command[0],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+#    print process1.stdout 
+    count = 1
+    while ( count < length):
+         process2 = subprocess.Popen(command[count],stdin=process1.stderr,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+         process1 = process2
+         count = count + 1
+    data, err = process1.communicate()
+    statuscode =  process1.wait()
+    return (data, statuscode)
 
+    
 def log_must(command):
     ret = log_pos(command)
-    if ret != 0:
+    if ret != SUCCESS:
        log_fail("")
+
+    
+def log_mustnot(command):
+    ret = log_notpos(command)
+    if ret == SUCCESS:
+       log_fail("")
+
+def log_onexit(func):
+    _CLEANUP = func
 
 def log_assert(command):
     _printline("ASSERTION :"+command)    

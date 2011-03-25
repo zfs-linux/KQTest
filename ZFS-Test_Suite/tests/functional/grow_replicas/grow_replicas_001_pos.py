@@ -61,8 +61,11 @@ if ret != 28:
    log_fail("file_write completed w/o ENOSPC, aborting!!!")
 
 
-if os.path.exists(TESTDIR+"/"+TESTFILE1) and os.path.getsize(TESTDIR+"/"+TESTFILE1) > 0 :
-   log_fail(TESTDIR+"/"+TESTFILE +" was not created or it is empty..")
+if not os.path.exists(TESTDIR+"/"+TESTFILE): 
+   log_fail(TESTDIR+"/"+TESTFILE +" was not created..")
+
+if not os.path.getsize(TESTDIR+"/"+TESTFILE) > 0 :
+   log_fail(TESTDIR+"/"+TESTFILE +" was empty..")
 
 DISK2="/dev/"+sys.argv[1]
 DISK3="/dev/"+sys.argv[2]

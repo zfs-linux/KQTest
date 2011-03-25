@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 SUCCESS = 0
 
 from logapi import *
@@ -57,8 +58,56 @@ def default_setup_noexit(disk_l):
       container = "false"
    return 0 
 
-   
 
+
+def default_container_cleanup():
+    ret = ismounted(TESTPOOL+"/"+TESTCTR+"/"+TESTFS1)
+    if ret == 0:
+       log_must([[ZFS,"unmount",TESTPOOL+"/"+TESTCTR+"/"+TESTFS1]])
+
+    if datasetexists(TESTPOOL+"/"+TESTCTR+"/"+TESTFS1) == 0 :
+       log_must([[ZFS,"destroy","-R",TESTPOOL+"/"+TESTCTR+"/"+TESTFS1]])
+
+    if datasetexists(TESTPOOL+"/"+TESTCTR) == 0 :
+       log_must([[ZFS,"destroy","-R",TESTPOOL+"/"+TESTCTR]])
+
+    if os.path.exists(TESTDIR1):
+       log_must([[RM,"-rf",TESTDIR1,">","/dev/null"]])
+
+    default_cleanup()
+
+
+def datasetexists(dataset):
+    (out, ret) = cmdExecute([[ZFS,"list","-H","-t",'filesystem,snapshot,volume',dataset]])
+    print "dataset=",ret
+    return ret
+
+def get_compress_opts(opt):
+    GZIP_OPTS=["gzip","gzip-1","gzip-2","gzip-3","gzip-4","gzip-5","gzip-6","gzip-7","gzip-8","gzip-9"]
+
+    if opt == "zfs_compress":
+       COMPRESS_OPTS=["on","lzjb"]
+
+    if opt == "zfs_set":
+       COMPRESS_OPTS=["on","off","lzjb"]
+
+    valid_opts=COMPRESS_OPTS
+    
+    (out, ret) = cmdExecute_on_stderr([[ZFS,"get"],[GREP,"gzip"]])
+    if ret == 0:
+       valid_opts = valid_opts + GZIP_OPTS
+
+    return valid_opts 
+
+def get_prop(prop,dataset):
+    prop_val = ""
+    (prop_val, ret) = cmdExecute([[ZFS,"get","-pH","-o","value",prop,dataset]])
+    if ret != 0:
+       log_note("Unable to get "+prop+" property for dataset "+dataset)
+    prop_val = re.sub('\n',"",prop_val) 
+    return prop_val
+
+    
 def poolexists(testpool):
    if testpool == "":
 	sys.exit("\nERROR : No pool name given\n")
@@ -135,6 +184,7 @@ def default_cleanup():
           i = i + 1
         
         log_must([[ZFS,"mount","-a"]])
+        return 0
 
 
             
@@ -213,3 +263,56 @@ def default_mirror_setup_noexit(SIDE_PRIMARY,SIDE_SECONDARY):
 def default_mirror_setup(SIDE_PRIMARY,SIDE_SECONDARY):
    default_mirror_setup_noexit(SIDE_PRIMARY,SIDE_SECONDARY)
    
+
+
+def add_user(gname,uname):
+   if gname == "" or uname == "" :
+      log_fail("group name or user name are not defined.")
+   uid = str(1000)
+   while 1:
+      (out,ret) = cmdExecute([[USERADD,"-u",uid,"-g",gname,"-d","/var/tmp/"+uname,"-m",uname]])
+      if ret == 0:
+         return 0
+      elif ret == 4:
+         uid = str( int(uid) + 1 )
+      else:
+         return 1
+   return 0
+
+
+
+#
+# Select valid gid and create specified group.
+#
+# group: group name
+#
+def add_group(group):
+   if group == "":
+      log_fail("group name is necessary.")   
+   # Assign 100 as the base gid
+   gid=str(100)
+   while 1:
+       (out,ret) = cmdExecute([[GROUPADD,"-g",gid,group]])
+       if ret == 0:
+           return 0
+       elif ret == 4:
+           gid = str(int(gid) + 1)
+       else:
+           return 1
+       
+
+
+#
+# Check whether current OS support a specified feature or not
+#
+# return 0 if current OS version is in unsupported list, 1 otherwise
+#
+# unsupported_ver unsupported target OS versions
+#
+def check_version(unsupported_vers):
+	cur_ver=cmdExecute([[UNAME,"-r"]])
+	for ver in unsupported_vers:
+           if cur_ver == ver :
+              return 0
+	return 1
+
