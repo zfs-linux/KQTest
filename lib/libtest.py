@@ -27,7 +27,7 @@ def default_setup_noexit(disk_l):
    else: 
       print "pool does not exist" 
  #  print "TESTPOOL",TESTPOOL
-   log_must([[ZPOOL,"create","-f",TESTPOOL,disk_l]])
+   log_must([[ZPOOL,"create","-f",TESTPOOL]+disk_l])
 
    (out, ret) = cmdExecute([[RM,"-rf",TESTDIR]])
    if ret != 0:
