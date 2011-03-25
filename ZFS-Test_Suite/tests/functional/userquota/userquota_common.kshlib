@@ -105,7 +105,7 @@ function user_run
 
         shift
 
-        eval \$RUNWATTR -u \$user -g \$group \"$@\" > /dev/null 2>&1
+#        eval \$RUNWATTR -u \$user -g \$group \"$@\" > /dev/null 2>&1
 #	echo "$@"
 	command=$@
 	#echo "user = $user group = $group r=$RUNWATTR"

@@ -80,6 +80,7 @@ for propname in "compression" "compress"
 do
 	for value in $(get_compress_opts zfs_compress)
 	do
+                echo "val=$value"
 		log_must $ZFS set $propname=$value $fs
 		if [[ $value == "gzip-6" ]]; then
 			value="gzip"

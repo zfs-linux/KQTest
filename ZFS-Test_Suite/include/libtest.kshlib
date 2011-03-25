@@ -454,8 +454,10 @@ END
 function default_container_cleanup
 {
 	if ! is_global_zone; then
+                echo "hiiiiiii123"
 		reexport_pool
 	fi
+        echo "hiiiiiiiii"
 
 	ismounted $TESTPOOL/$TESTCTR/$TESTFS1
 	[[ $? -eq 0 ]] && \
@@ -1274,6 +1276,7 @@ function zfs_zones_setup #zone_name zone_root zone_ip
 #
 function reexport_pool
 {
+        echo "hiii"
 	typeset -i cntctr=5
 	typeset -i i=0
 
@@ -1289,6 +1292,7 @@ function reexport_pool
 				log_must eval $ZFS mount \$TESTPOOL$i
 			fi
 		fi
+                echo "hii=$TESTPOOL$i"
 		(( i += 1 ))
 	done
 }

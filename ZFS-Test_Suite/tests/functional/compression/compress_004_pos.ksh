@@ -75,9 +75,12 @@ function create_free_testing #<file size> <file>
 
 	for start in 0 `expr $RANDOM % $fsz`
 	do
-		(( dist = fsz - start ))	
+		#echo "start=$start"
+                (( dist = fsz - start ))
+                echo "start=$start   dist=$dist"	
 		for len in `expr $RANDOM % $dist` $dist \
 			`expr $start + $dist`; do
+                        echo "len=$len"
 			log_must ./$RANDFREE_FILE -l fsz -s $start \
 				-n $len $file
 			[[ -e $file ]] && \

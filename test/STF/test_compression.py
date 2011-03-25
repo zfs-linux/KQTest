@@ -19,7 +19,7 @@ class test_compression(unittest.TestCase):
         
     def cleanup(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        cmdQuery([path + "/compression/cleanup.py"], env=newenv, cwd=path+"/compression")
+        cmdQuery([path + "/compression/cleanup.ksh"], env=newenv, cwd=path+"/compression")
 
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
