@@ -28,11 +28,10 @@
 # ident	"@(#)setup.py	1.5	09/01/13 SMI"
 #
 
-import os
 import sys
 sys.path.append(".")
 from default import *
-from clean_mirror_common import *
+from scrub_mirror_common import *
 sys.path.append("../../../../lib")
 from libtest import *
 

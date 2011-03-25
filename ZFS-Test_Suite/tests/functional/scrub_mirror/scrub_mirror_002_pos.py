@@ -24,23 +24,46 @@
 # Copyright 2007 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-# ident	"@(#)cleanup.ksh	1.3	07/02/06 SMI"
+# ident	"scrub_mirror_001_pos.py	1.2	07/01/09 SMI"
 #
-
 
 import sys
 sys.path.append(".")
 from default import *
-from clean_mirror_common import *
+from scrub_mirror_common import *
 sys.path.append("../../../../lib")
 from libtest import *
 
 
+###############################################################################
+#
+# __stc_assertion_start
+#
+# ID: scrub_mirror_002_pos
+#
+# DESCRIPTION:
+# The secondary side of a zpool mirror can be zeroed without causing damage
+# to the data in the pool
+#
+# STRATEGY:
+# 1) Write several files to the ZFS filesystem in the mirrored pool
+# 2) dd from /dev/zero over the secondary side of the mirror
+# 3) verify that all the file contents are unchanged on the file system
+#
+# TESTABILITY: explicit
+#
+# TEST_AUTOMATION_LEVEL: automated
+#
+# CODING_STATUS: COMPLETED (2005-07-04)
+#
+# __stc_assertion_end
+#
+################################################################################
 
-if not os.geteuid()==0:
-	sys.exit("\nOnly root can run this script\n")
-(out,ret) = cmdExecute([[DF,"-F","zfs","-h"],[GREP,TESTFS]])
-if ret == 0:
-    log_must([[ZFS,"umount","-f",TESTDIR]])
 
-destroy_pool(TESTPOOL)
+log_assert("The primary side of a zpool mirror may be completely wiped" \
+	"without affecting the content of the pool")
+
+overwrite_verify_mirror(TESTPOOL,SIDE_SECONDARY,"/dev/zero")
+log_pass("The overwrite had no effect on the data")
+

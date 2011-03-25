@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 #
 # CDDL HEADER START
 #
@@ -22,36 +21,24 @@
 #
 
 #
-# Copyright 2009 Sun Microsystems, Inc.  All rights reserved.
+# Copyright 2007 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-# ident	"@(#)setup.py	1.5	09/01/13 SMI"
+# ident	"@(#)cleanup.py	1.3	07/02/06 SMI"
 #
 
-import os
 import sys
 sys.path.append(".")
 from default import *
-from clean_mirror_common import *
+from scrub_mirror_common import *
 sys.path.append("../../../../lib")
 from libtest import *
 
-DISKS=sys.argv
 
-SINGLE_DISK= ""
 if not os.geteuid()==0:
 	sys.exit("\nOnly root can run this script\n")
+(out,ret) = cmdExecute([[DF,"-F","zfs","-h"],[GREP,TESTFS]])
+if ret == 0:
+    log_must([[ZFS,"umount","-f",TESTDIR]])
 
-if len(sys.argv) not in [2] :
-	sys.exit("USAGE : setup.ksh <Primary_Mirror_disk> <Secondary_Mirror_disk>")
-
-if SINGLE_DISK != "":
-	log_note("Partitioning a single disk " + SINGLE_DISK)
-else:
-	log_note("Partitioning disks "+MIRROR_PRIMARY +" "+ MIRROR_SECONDARY)
-
-default_mirror_setup(SIDE_PRIMARY,SIDE_SECONDARY)
-
-log_pass("setup success")
-
-
+destroy_pool(TESTPOOL)

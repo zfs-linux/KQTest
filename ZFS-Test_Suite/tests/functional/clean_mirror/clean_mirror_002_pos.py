@@ -27,17 +27,12 @@
 # ident	"clean_mirror_001_pos.py	1.2	07/01/09 SMI"
 #
 
-
-import os
 import sys
 sys.path.append(".")
 from default import *
 from clean_mirror_common import *
 sys.path.append("../../../../lib")
 from libtest import *
-from logapi import *
-from common_variable import *
-
 
 ###############################################################################
 #
