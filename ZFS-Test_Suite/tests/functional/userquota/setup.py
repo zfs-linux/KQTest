@@ -61,5 +61,6 @@ print " add_user 2 done "
 
 #DISK=${DISKS%% *}
 #DISK=$1
-DISK=sys.argv
-default_setup(DISK[1])
+DISK=sys.argv[1:]
+print DISK
+default_setup(DISK)
