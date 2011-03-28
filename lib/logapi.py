@@ -33,12 +33,123 @@ FAIL = 1
 STF_UNSUPPORTED=4
 STF_UNRESOLVED=5
 
+# Perform cleanup and exit 
+#
+# code - stf exit code
+# msg - message text
+
+def _endlog(code,msg):    
+    logfile="/tmp/log.$$"
+    global _CLEANUP
+    #_recursive_output $logfile
+    if _CLEANUP != "":
+        cleanup=_CLEANUP
+        log_onexit("")
+        log_note("Performing local cleanup via log_onexit")
+	cleanup()
+    exitcode=code
+    if msg != "":
+        _printline(msg)
+    exit(exitcode)
+
+
+
+# Set an exit handler
+#
+#  - function(s) to perform on exit
+#
+# Exit functions
+#
+
+# Perform cleanup and exit STF_PASS
+#
+# msg - message text
+
+def log_pass(msg):
+    _endlog(STF_PASS,msg)
+
+# Perform cleanup and exit STF_FAIL
+#
+# msg - message text
+
+def log_fail(msg):
+    _endlog(STF_FAIL,msg)
+
+# Perform cleanup and exit STF_UNRESOLVED
+#
+# msg - message text
+
+def log_unresolved(msg):
+    _endlog(STF_UNRESOLVED,msg)
+
+# Perform cleanup and exit STF_NOTINUSE
+#
+# msg - message text
+
+def log_notinuse(msg):
+    _endlog(STF_NOTINUSE,msg)
+
+# Perform cleanup and exit STF_UNSUPPORTED
+#
+# msg - message text
+
+def log_unsupported(msg):
+    _endlog(STF_UNSUPPORTED,msg)
+
+# Perform cleanup and exit STF_UNTESTED
+#
+# msg - message text
+
+def log_untested(msg):
+    _endlog(STF_UNTESTED,msg)
+
+# Perform cleanup and exit STF_UNINITIATED
+#
+# msg - message text
+
+
+def log_uninitiated(msg):
+    _endlog(STF_UNINITIATED,msg)
+
+
+# Perform cleanup and exit STF_NORESULT
+#
+# msg - message text
+
+def log_noresult(msg):
+    _endlog(STF_NORESULT,msg)
+
+# Perform cleanup and exit STF_WARNING
+#
+# msg - message text
+
+def log_warning(msg):
+    _endlog(STF_WARNING,msg)
+
+# Perform cleanup and exit $STF_TIMED_OUT
+#
+# msg - message text
+
+def log_timed_out(msg):
+    _endlog(STF_TIMED_OUT,msg)
+
+# Perform cleanup and exit $STF_OTHER
+#
+# msg - message text
+
+def log_other(msg):
+    _endlog(STF_OTHER,msg)
+
+def log_onexit(func):
+    global _CLEANUP
+    _CLEANUP = _CLEANUP + func
+    print "func " +_CLEANUP
+
 def log_pos(command):
     length = len(command)
     if length == 0:
         return 0
     process1 = subprocess.Popen(command[0],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-#    print process1.stdout 
     count = 1
     while ( count < length):
          process2 = subprocess.Popen(command[count],stdin=process1.stdout,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -59,7 +170,6 @@ def log_notpos(command):
     if length == 0:
         return 0
     process1 = subprocess.Popen(command[0],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-#    print process1.stdout 
     count = 1
     while ( count < length):
          process2 = subprocess.Popen(command[count],stdin=process1.stdout,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -80,7 +190,6 @@ def cmdExecute(command):
     if length == 0:
         return 0
     process1 = subprocess.Popen(command[0],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-#    print process1.stdout 
     count = 1
     while ( count < length):
          process2 = subprocess.Popen(command[count],stdin=process1.stdout,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -95,7 +204,6 @@ def cmdExecute_on_stderr(command):
     if length == 0:
         return 0
     process1 = subprocess.Popen(command[0],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-#    print process1.stdout 
     count = 1
     while ( count < length):
          process2 = subprocess.Popen(command[count],stdin=process1.stderr,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -118,6 +226,7 @@ def log_mustnot(command):
        log_fail("")
 
 def log_onexit(func):
+    global _CLEANUP
     _CLEANUP = func
 
 def log_assert(command):
@@ -135,19 +244,5 @@ def _printerror(command):
 def _printsuccess(command):
     print "SUCCESS: ",command
 
-def log_fail(str):
-    _endlog(STF_FAIL,str)
 
 
-def _endlog(STF_val,str):
-    print str
-    sys.exit(STF_val)
-
-def log_pass(str):
-    _endlog(STF_PASS,str)
-
-def log_unsupported(str):
-    _endlog(STF_UNSUPPORTED,str)
-
-def log_unresolved(str):
-   _endlog(STF_UNRESOLVED,str)
