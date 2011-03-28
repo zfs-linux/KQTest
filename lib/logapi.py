@@ -32,7 +32,7 @@ SUCCESS = 0
 FAIL = 1
 STF_UNSUPPORTED=4
 STF_UNRESOLVED=5
-
+_CLEANUP = ""
 # Perform cleanup and exit 
 #
 # code - stf exit code
