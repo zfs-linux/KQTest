@@ -1,4 +1,4 @@
-#!/bin/ksh -p
+#!/usr/bin/python
 #
 # CDDL HEADER START
 #
@@ -27,10 +27,14 @@
 # ident	"@(#)refreserv_003_pos.ksh	1.1	08/02/29 SMI"
 #
 
-. $STF_SUITE/include/libtest.kshlib
-. $STF_SUITE/commands.cfg
-. $STF_SUITE/tests/functional/refreserv/refreserv.cfg
-. $STF_SUITE/include/default_common_varible.kshlib
+import os
+import sys
+sys.path.append(".")
+from refreserv import *
+sys.path.append("../../../../lib")
+from libtest import *
+from common_variable import *
+
 #################################################################################
 #
 # __stc_assertion_start
@@ -56,37 +60,31 @@
 #
 ################################################################################
 
-verify_runnable "both"
+def cleanup():
+        log_must([[ZFS, "destroy", "-rf", TESTPOOL + "/" + TESTFS]])
+        log_must([[ZFS, "create",  TESTPOOL + "/" + TESTFS]])
+        log_must([[ZFS, "set", "mountpoint" + "=" + TESTDIR, TESTPOOL + "/" + TESTFS]])
 
-function cleanup
-{
-	log_must $ZFS destroy -rf $TESTPOOL/$TESTFS
-	log_must $ZFS create $TESTPOOL/$TESTFS
-	log_must $ZFS set mountpoint=$TESTDIR $TESTPOOL/$TESTFS
-}
+log_assert("Verify a snapshot will only be allowed if there is enough free space outside of this refreservation.")
+log_onexit(cleanup)
+       	
+fs=TESTPOOL + "/" + TESTFS
 
-log_assert "Verify a snapshot will only be allowed if there is enough " \
-	"free space outside of this refreservation."
-log_onexit cleanup
+log_must([[ZFS, "set", "quota=25M", fs]])
+log_must([[ZFS, "set", "refreservation=10M", fs]])
 
-fs=$TESTPOOL/$TESTFS
-log_must $ZFS set quota=25M $fs
-log_must $ZFS set refreservation=10M $fs
+mntpnt=get_prop("mountpoint", fs)
 
-mntpnt=$(get_prop mountpoint $fs)
-log_must $DD if=/dev/zero of=$mntpnt/$TESTFILE bs=1M count=7
-log_must $ZFS snapshot $fs@snap
+log_must([[DD, "if=/dev/zero", "of=" + mntpnt + "/" + TESTFILE, "bs=1M", "count=7"]])
+log_must([[ZFS, "snapshot", fs + "@snap"]])
 
-log_must $DD if=/dev/zero of=$mntpnt/$TESTFILE.2 bs=1M count=7
-log_must $ZFS snapshot $fs@snap2
+log_must([[DD, "if=/dev/zero", "of=" + mntpnt + "/" + TESTFILE  + ".2", "bs=1M", "count=7"]])
+log_must([[ZFS, "snapshot", fs + "@snap2"]])
 
-log_must $DD if=/dev/zero of=$mntpnt/$TESTFILE.3 bs=1M count=7
-log_mustnot $ZFS snapshot $fs@snap3
-$ZFS list -t all
+log_must([[DD, "if=/dev/zero", "of=" + mntpnt + "/" + TESTFILE  + ".3", "bs=1M", "count=7"]])
+log_mustnot([[ZFS, "snapshot", fs + "@snap3"]])
 
-if datasetexists $fs@snap3 ; then
-	log_fail "ERROR: $fs@snap3 should not exists."
-fi
+if datasetexists(fs + "@snap3") == 0 : 
+	log_fail("ERROR: $fs@snap3 should not exists.")
 
-log_pass "Verify a snapshot will only be allowed if there is enough " \
-	"free space outside of this refreservation."
+log_pass("Verify a snapshot will only be allowed if there is enough free space outside of this refreservation.")

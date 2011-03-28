@@ -1,4 +1,4 @@
-#!/bin/ksh -p
+#!/usr/bin/python
 #
 # CDDL HEADER START
 #
@@ -27,10 +27,14 @@
 # ident	"@(#)refreserv_004_pos.ksh	1.3	09/05/19 SMI"
 #
 
-. $STF_SUITE/include/libtest.kshlib
-. $STF_SUITE/commands.cfg
-. $STF_SUITE/tests/functional/refreserv/refreserv.cfg
-. $STF_SUITE/include/default_common_varible.kshlib
+import os
+import sys
+sys.path.append(".")
+from refreserv import *
+sys.path.append("../../../../lib")
+from libtest import *
+from common_variable import *
+
 #################################################################################
 #
 # __stc_assertion_start
@@ -55,50 +59,37 @@
 #
 ################################################################################
 
-verify_runnable "both"
+def cleanup() :
+        log_must([[ZFS, "set", "refreservation=none", TESTPOOL]])
+        log_must([[ZFS, "destroy", "-rf", TESTPOOL + "/" + TESTFS]])
+        log_must([[ZFS, "create",  TESTPOOL + "/" + TESTFS]])
+        log_must([[ZFS, "set", "mountpoint" + "=" + TESTDIR, TESTPOOL + "/" + TESTFS]])
 
-function cleanup
-{
-	#if is_global_zone ; then
-		log_must $ZFS set refreservation=none $TESTPOOL
-	#fi
-	log_must $ZFS destroy -rf $TESTPOOL/$TESTFS
-	log_must $ZFS create $TESTPOOL/$TESTFS
-	log_must $ZFS set mountpoint=$TESTDIR $TESTPOOL/$TESTFS
-}
+log_assert("Verify refreservation is limited by available space.")
+log_onexit(cleanup)
 
-log_assert "Verify refreservation is limited by available space."
-log_onexit cleanup
+pool = TESTPOOL
+fs = pool + "/" + TESTFS 
+subfs = fs + "/" + "subfs"
 
-pool=$TESTPOOL ; fs=$pool/$TESTFS ; subfs=$fs/subfs
-log_must $ZFS create $subfs
+log_must([[ZFS, "create", subfs]])
 
-#typeset datasets
-#if is_global_zone; then
-        datasets="$pool $fs"
-#else
-#        datasets="$fs"
-#fi
+datasets=[ pool, fs]
 
-for ds in $datasets; do
-	log_must $ZFS set quota=25M $ds
-	log_must $ZFS set refreservation=15M $ds
+for ds in datasets :
 
-	typeset -i avail
-	avail=$(get_prop avail $subfs)
-	log_must $ZFS set refreservation=$avail $subfs
-	typeset mntpnt
-	mntpnt=$(get_prop mountpoint $subfs)
-	log_must $DD if=/dev/zero of=$mntpnt/$TESTFILE bs=$avail count=1
+	log_must([[ZFS, "set", "quota=25M", ds]])
+        log_must([[ZFS, "set", "refreservation=15M", ds]])
 
-	typeset -i exceed
-	((exceed = avail + 1))
-	log_mustnot $ZFS set refreservation=$exceed $subfs
-	log_mustnot $DD if=/dev/zero of=$mntpnt/$TESTFILE bs=$avail count=1
+	avail=get_prop("avail", subfs)
+	log_must([[ZFS, "set", "refreservation=" + avail, subfs]])
+	mntpnt=get_prop("mountpoint", subfs)
+	log_must([[DD, "if=/dev/zero", "of=" + mntpnt + "/" + TESTFILE, "bs=" + avail, "count=1"]])
 
-	log_must $ZFS set quota=none $ds
-	log_must $ZFS set reservation=15M $ds
-	$ZFS list -t all
-done
+	exceed = avail + 1
+	log_mustnot([[ZFS, "set", "refreservation=" + exceed, subfs]])
+	log_mustnot([[DD, "if=/dev/zero", "of=" + mntpnt + "/" + TESTFILE, "bs=" + avail, "count=1"]])
+	log_must([[ZFS, "set", "quota=none", ds]])
+	log_must([[ZFS, "set", "reservation=15M", ds]])
 
-log_pass "Verify refreservation is limited by available space."
+log_pass("Verify refreservation is limited by available space.")

@@ -1,4 +1,4 @@
-#
+#!/usr/bin/python
 # CDDL HEADER START
 #
 # The contents of this file are subject to the terms of the
@@ -26,4 +26,7 @@
 # ident	"@(#)refreserv.cfg	1.2	08/08/15 SMI"
 #
 
-export TESTFILE=testfile$$
+import os
+
+pid=os.getpid()
+TESTFILE="testfile" + str(pid)
