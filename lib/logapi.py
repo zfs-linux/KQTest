@@ -34,8 +34,6 @@ STF_UNSUPPORTED=4
 STF_UNRESOLVED=5
 
 def log_pos(command):
-    print "args to logmust :",
-    print command
     length = len(command)
     if length == 0:
         return 0
@@ -57,8 +55,6 @@ def log_pos(command):
 
 
 def log_notpos(command):
-    print "args to log_mustnot :",
-    print command
     length = len(command)
     if length == 0:
         return 0
@@ -80,8 +76,6 @@ def log_notpos(command):
 
 
 def cmdExecute(command):
-    print "args to cmdExecute :",
-    print command
     length = len(command)
     if length == 0:
         return 0
@@ -97,8 +91,6 @@ def cmdExecute(command):
     return (data, statuscode)
 
 def cmdExecute_on_stderr(command):
-    print "args to cmdExecute_on_stderr :",
-    print command
     length = len(command)
     if length == 0:
         return 0
