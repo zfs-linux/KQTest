@@ -7,6 +7,7 @@ from logapi import *
 from common_variable import *
 from all_commands import *
 
+global container
 container = "false"
 volume = "false"
 
@@ -27,7 +28,7 @@ def default_setup_noexit(disk_l):
    else: 
       print "pool does not exist" 
  #  print "TESTPOOL",TESTPOOL
-   log_must([[ZPOOL,"create","-f",TESTPOOL]+disk_l])
+   log_must([[ZPOOL,"create","-f",TESTPOOL,disk_l]])
 
    (out, ret) = cmdExecute([[RM,"-rf",TESTDIR]])
    if ret != 0:
@@ -54,7 +55,6 @@ def default_setup_noexit(disk_l):
       log_must([[ZFS,"create",TESTPOOL+"/"+TESTCTR+"/"+TESTFS1]])
       log_must([[ZFS,"set","mountpoint="+TESTDIR1,TESTPOOL+"/"+TESTCTR+"/"+TESTFS1]])
 
-      global container
       container = "false"
    return 0 
 
@@ -315,4 +315,24 @@ def check_version(unsupported_vers):
            if cur_ver == ver :
               return 0
 	return 1
+
+
+
+#
+# Simple function to get the specified property of pool. If unable to
+# get the property then exits.
+#
+def get_pool_prop(prop, pool) : 
+
+	prop_val = ""
+        if  0 == poolexists(pool) :
+		(prop_val, ret) = cmdExecute([[ZPOOL, "get", prop, pool, "2>/dev/null"],[TAIL, "-1"],[AWK, '{print $3}']])
+		if  ret != 0 :
+                	log_note("Unable to get prop property for pool")
+                        return (prop_val, 1)
+	else :
+        	log_note(" pool not exists : ")
+                return (prop_val, 1)
+	return (prop_val, ret)
+
 
