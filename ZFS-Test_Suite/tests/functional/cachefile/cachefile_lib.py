@@ -40,7 +40,7 @@ from common_variable import *
 # A function to determine if a given pool name has an entry in cachefile
 # returns 1 if the pool is not in the cache, 0 otherwise.
 
-def pool_in_cache(name, file) : 
+def pool_in_cache(name, file = "") : 
 
 	# checking for the pool name in the strings output of
 	# the given cachefile, default is /etc/zfs/zpool.cache
@@ -48,10 +48,10 @@ def pool_in_cache(name, file) :
 	cachefile =  file
 	poolname = name
 	
-	(RESULT, ret) = cmdExecute([[STRINGS, cachefile, "|",  GREP, "-w", poolname]])
-	if  len(RESULT) :
-		print "pool is not in the cache"
+	(RESULT, ret) = cmdExecute([[STRINGS, cachefile],[GREP, "-w", poolname]])
+	if  RESULT == "" :
+		log_note("pool is not in the cache")
 		return 1
-	print "pool is in the cache"
+	log_note("pool is in the cache")
 	return 0
 

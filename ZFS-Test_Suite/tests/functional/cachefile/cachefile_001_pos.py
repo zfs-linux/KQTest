@@ -29,6 +29,7 @@
 
 import os
 import sys
+import re
 sys.path.append(".")
 from cachefile import *
 from cachefile_lib import *
@@ -80,7 +81,7 @@ def cleanup() :
 log_assert("Creating a pool with \"cachefile\" set doesn't update zpool.cache")
 log_onexit(cleanup)
 
-opts = [ "none", "false", "none", "$CPATH", "true", "-", "$CPATH1", "true", "$CPATH1", "$CPATH2", "true", "$CPATH2"]
+opts = [ "none", "false", "none", CPATH, "true", "-", CPATH1, "true", CPATH1, CPATH2, "true", CPATH2]
 
 i=0
 
@@ -89,7 +90,7 @@ while i < len(opts) :
 	log_must([[ZPOOL, "create", "-o", "cachefile="+opts[i],  TESTPOOL, DISKS[1], DISKS[2]]])
 
 	if opts[i+1] == "false" :
-		ret  = pool_in_cache(TESTPOOL, opts[i])
+		ret  = pool_in_cache(TESTPOOL)
 		if ret != 1 :
 			log_pass(" ERROR : pool in cache") 
 	if opts[i+1] == "true" :
@@ -97,12 +98,15 @@ while i < len(opts) :
 		if ret != 0 :
 			log_pass(" ERROR : pool not in cache")
 			
-	PROP = get_pool_prop(cachefile, TESTPOOL)
-	if  PROP != opts[i+2] : 
-		log_fail("cachefile property not set as expected. Expect: ${opts[((i+2))]}, Current: $PROP")
+	(PROP, ret) = get_pool_prop("cachefile", TESTPOOL)
+
+	PROP = re.sub('\n', "", PROP)
+	
+	if PROP != opts[i+2] : 
+		log_fail("cachefile property not set as expected. Expect: " + str(opts[i+2]) + " Current: " + str(PROP))
 	
 	log_must([[ZPOOL, "destroy", TESTPOOL]])
-	i = i + 3 
+	i = i + 3
 		
 log_pass("Creating a pool with \"cachefile\" set doesn't update zpool.cache")
 
