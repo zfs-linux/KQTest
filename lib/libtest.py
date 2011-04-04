@@ -336,3 +336,24 @@ def get_pool_prop(prop, pool) :
 	return (prop_val, ret)
 
 
+#
+# Check if the given device is physical device
+#
+def is_physical_device(device) : 
+
+	(val, ret) = cmdExecute([[FIND, "/dev/", "-name", device]])
+        return (val, ret)
+
+#
+# Get the directory path of given device
+#
+def get_device_dir(device) :
+        
+	(val, ret) = is_physical_device(device)
+	if ret != 0 : 
+		device = device.rpartition("/")[0] + "/"
+		return (device)	
+	else :
+		return ("/dev/")
+        
+
