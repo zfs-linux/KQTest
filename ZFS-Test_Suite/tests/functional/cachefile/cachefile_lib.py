@@ -44,10 +44,13 @@ def pool_in_cache(name, file = "") :
 
 	# checking for the pool name in the strings output of
 	# the given cachefile, default is /etc/zfs/zpool.cache
-	
-	cachefile =  file
+
+	cachefile = file	
+	if len(file) == 0 :
+		cachefile = CPATH
+
 	poolname = name
-	
+
 	(RESULT, ret) = cmdExecute([[STRINGS, cachefile],[GREP, "-w", poolname]])
 	if  RESULT == "" :
 		log_note("pool is not in the cache")
