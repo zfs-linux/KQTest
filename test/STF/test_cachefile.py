@@ -28,19 +28,27 @@ class test_cachefile_pool(unittest.TestCase):
      	disk = "/dev/" + disk
      	disk1 = self.d1[1].diskname
      	disk1 = "/dev/" + disk1
-        lib.STFwrap.runScriptArgs(self, ["/cachefile/cachefile_001_pos.ksh", disk, disk1])
+        lib.STFwrap.runScriptArgs(self, ["/cachefile/cachefile_001_pos.py", disk, disk1])
+
 
     def test_cachefile_002_pos(self):
         disk = self.d1[0].diskname
         disk = "/dev/" + disk
      	disk1 = self.d1[1].diskname
         disk1 = "/dev/" + disk1
-        lib.STFwrap.runScriptArgs(self, ["/cachefile/cachefile_002_pos.ksh", disk, disk1])
+        lib.STFwrap.runScriptArgs(self, ["/cachefile/cachefile_002_pos.py", disk, disk1])
+
+    def test_cachefile_003_pos(self):
+        disk = self.d1[0].diskname
+        disk = "/dev/" + disk
+     	disk1 = self.d1[1].diskname
+        disk1 = "/dev/" + disk1
+        lib.STFwrap.runScriptArgs(self, ["/cachefile/cachefile_003_pos.py", disk, disk1])
 
     def test_cachefile_004_pos(self):
         disk = self.d1[0].diskname
         disk = "/dev/" + disk
 	disk1 = self.d1[1].diskname
         disk1 = "/dev/" + disk1
-        lib.STFwrap.runScriptArgs(self, ["/cachefile/cachefile_004_pos.ksh", disk, disk1])
+        lib.STFwrap.runScriptArgs(self, ["/cachefile/cachefile_004_pos.py", disk, disk1])
    
