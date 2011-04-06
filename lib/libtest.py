@@ -8,7 +8,6 @@ from common_variable import *
 from all_commands import *
 
 global container
-container = "false"
 volume = "false"
 
 def default_setup(disk_l):
@@ -17,17 +16,16 @@ def default_setup(disk_l):
 def default_container_setup(disk_l):
     global container     # Needed to modify global copy of container 
     container = "true"
- #   print "container===",container
     default_setup_noexit(disk_l)
- #   print "container=========",container
 
 def default_setup_noexit(disk_l):
+   container = "false"
+
    if poolexists(TESTPOOL) == SUCCESS:
       print "pool exist",TESTPOOL
       destroy_pool(TESTPOOL)
    else: 
       print "pool does not exist" 
- #  print "TESTPOOL",TESTPOOL
    log_must([[ZPOOL,"create","-f",TESTPOOL,disk_l]])
 
    (out, ret) = cmdExecute([[RM,"-rf",TESTDIR]])
@@ -39,9 +37,7 @@ def default_setup_noexit(disk_l):
       log_unresolved("Could not create "+TESTDIR)
 
    log_must([[ZFS,"create",TESTPOOL+"/"+TESTFS]])
-#   print "container",container
    if container == "true" :
-      
       (out, ret) = cmdExecute([[RM,"-rf",TESTDIR1]])
       if ret != 0:
          log_unresolved("Could not remove "+TESTDIR1)
