@@ -1,3 +1,4 @@
+#!/usr/bin/python  
 #
 # CDDL HEADER START
 #
@@ -18,18 +19,29 @@
 #
 # CDDL HEADER END
 #
-
+ 
 #
-# Copyright 2008 Sun Microsystems, Inc.  All rights reserved.
+# Copyright 2009 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-# ident	"@(#)sparse.cfg	1.3	08/08/15 SMI"
+# ident "@(#)setup.ksh  1.4 09/01/12 SMI"
 #
 
-#export TESTFILE=testfile.$$
-export HOLES_FILESIZE=${HOLES_FILESIZE-"671088"} # 64 Mb
-export HOLES_BLKSIZE=${HOLES_BLKSIZE-"4096"}
-export HOLES_SEED=${HOLES_SEED-""}
-export HOLES_FILEOFFSET=${HOLES_FILEOFFSET-""}
-export HOLES_COUNT=${HOLES_COUNT-"1630"}	   # FILESIZE/BLKSIZE/8
-export STF_TIMEOUT=3600
+import os
+import sys
+sys.path.append("../../../../lib")
+from libtest import *
+from common_variable import *
+
+if not os.geteuid() == 0 :
+    sys.exit("\n only root can run this script")
+
+DISK = sys.argv[1:]
+
+for n in DISK:
+    ret = existent_of_disk(n)
+    if ret != 0:
+        sys.exit("\nwrong input " + n)
+
+default_setup(DISK)
+

@@ -1,4 +1,4 @@
-#!/bin/ksh -p
+#!/usr/bin/python
 #
 # CDDL HEADER START
 #
@@ -25,12 +25,16 @@
 # Use is subject to license terms.
 #
 # ident	"@(#)sparse_001_pos.ksh	1.3	09/01/12 SMI"
-#
+# 
 
-. $STF_SUITE/include/libtest.kshlib
-. $STF_SUITE/commands.cfg
-. $STF_SUITE/include/default_common_varible.kshlib
-. $STF_SUITE/tests/functional/sparse/sparse.cfg
+import os
+import sys
+sys.path.append("../../../../lib")
+from libtest import *
+from logapi import *
+from common_variable import *
+from sparse_cfg import *
+
 ################################################################################
 #
 # __stc_assertion_start
@@ -54,40 +58,45 @@
 #
 # __stc_assertion_end
 #
-################################################################################
+################################################################################ 
 
-verify_runnable "global"
+def cleanup():
+    log_must([[RM, "-rf", TESTDIR+"/*"]])
 
-function cleanup
-{
-	[[ -e $TESTDIR ]] && log_must $RM -rf $TESTDIR/*
-}
+log_assert("Ensure random blocks are read back correctly")
 
-log_assert "Ensure random blocks are read back correctly"
+options = ""
+options_display = "default options"
 
-options=""
-options_display="default options"
+log_onexit(cleanup)
 
-log_onexit cleanup
+if len(HOLES_FILESIZE) != 0:
+    options = options +" -f "+ HOLES_FILESIZE
 
-[[ -n "$HOLES_FILESIZE" ]] && options=" $options -f $HOLES_FILESIZE "
+if len(HOLES_BLKSIZE) != 0:
+    options = options +" -b "+ HOLES_BLKSIZE
 
-[[ -n "$HOLES_BLKSIZE" ]] && options="$options -b $HOLES_BLKSIZE "
+if len(HOLES_COUNT) != 0:
+    options = options +" -c "+ HOLES_COUNT
 
-[[ -n "$HOLES_COUNT" ]] && options="$options -c $HOLES_COUNT "
+if len(HOLES_SEED) != 0:
+    options = options +" -s "+ HOLES_SEED
 
-[[ -n "$HOLES_SEED" ]] && options="$options -s $HOLES_SEED "
+if len(HOLES_FILEOFFSET) != 0:
+    options = options +" -o "+ HOLES_FILEOFFSET
 
-[[ -n "$HOLES_FILEOFFSET" ]] && options="$options -o $HOLES_FILEOFFSET "
+options = options+" -r"
+print "options are"+ options + TESTDIR +"/"+ TESTFILE
 
-options="$options -r "
-echo "options are   $options $TESTDIR/$TESTFILE"
-[[ -n "$options" ]] && options_display=$options
+if len(options) !=0:
+    options_display = options
 
-log_note "Invoking $FILE_TRUNC with: $options_display"
-log_must ./$FILE_TRUNC $options $TESTDIR/$TESTFILE
+log_note("Invoking file_truc with : "+options_display)
+log_must([["./file_trunc", options, TESTDIR+"/"+ TESTFILE]])
 
-typeset dir=$(get_device_dir $@)
-verify_filesys "$TESTPOOL" "$TESTPOOL/$TESTFS" "$dir"
+tmp = sys.argv[1]
+dir = get_device_dir(tmp)
+#print"**********"+str(dir)
+verify_filesys (TESTPOOL, TESTPOOL+"/"+TESTFS, dir)
 
-log_pass "Random blocks have been read back correctly."
+log_pass("Random blokcs have been read back correctly")

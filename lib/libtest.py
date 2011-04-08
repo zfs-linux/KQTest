@@ -26,7 +26,13 @@ def default_setup_noexit(disk_l):
       destroy_pool(TESTPOOL)
    else: 
       print "pool does not exist" 
-   log_must([[ZPOOL,"create","-f",TESTPOOL,disk_l]])
+   
+   disk_zp = [ZPOOL,"create","-f",TESTPOOL]
+   
+   for disk in disk_l :
+       disk_zp.append(disk)
+
+   log_must([disk_zp])
 
    (out, ret) = cmdExecute([[RM,"-rf",TESTDIR]])
    if ret != 0:
@@ -344,12 +350,37 @@ def is_physical_device(device) :
 # Get the directory path of given device
 #
 def get_device_dir(device) :
+    (val, ret) = is_physical_device(device)
+    if ret != 0: 
+        device = device.rpartition("/")[0] + "/"
+        return (device)	
+    else:
+        pass 
+        #return ("/dev/")
         
-	(val, ret) = is_physical_device(device)
-	if ret != 0 : 
-		device = device.rpartition("/")[0] + "/"
-		return (device)	
-	else :
-		return ("/dev/")
-        
+def verify_filesys(pool, filesys, dirs):
+    pid = os.getpid()
+    zdbout = "/tmp/zdbout."+str(pid)
+    search_path = ""
 
+    log_note("Calling ZDB to verify filesystem "+filesys)
+
+    log_must([[ZPOOL, "export", pool]])
+    #length = len(dirs)
+    print dirs
+    if dirs == "None" :
+        for dir in dirs:
+            search_path = search_path + dir
+        log_must([[ZPOOL, "import", "-d", str(search_path), pool]])
+    else :
+        log_must([[ZPOOL, "import", pool]])
+
+    (out, ret) = cmdExecute([[ZDB, "-cudi", filesys, ">", zdbout, "2>&1"]])
+    print out
+    if ret != 0:
+        log_note("Output: zdb -cudi "+filesys)
+        cmdExecute([[CAT, zdbout]])
+        log_fail("zdb detected errors with: "+filesys)
+
+    log_must([[ZFS, "mount", "-a"]])
+    log_must([[RM, "-rf", zdbout]])

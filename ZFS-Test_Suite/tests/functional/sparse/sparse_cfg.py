@@ -1,4 +1,4 @@
-#!/bin/ksh -p
+#!/usr/bin/python
 #
 # CDDL HEADER START
 #
@@ -21,17 +21,20 @@
 #
 
 #
-# Copyright 2007 Sun Microsystems, Inc.  All rights reserved.
+# Copyright 2008 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-# ident	"@(#)cleanup.ksh	1.2	07/01/09 SMI"
+# ident	"@(#)sparse.cfg	1.3	08/08/15 SMI"
 #
 
-. ${STF_SUITE}/include/libtest.kshlib
-. $STF_SUITE/include/default_common_varible.kshlib
-. $STF_SUITE/tests/functional/sparse/sparse.cfg
-. $STF_SUITE/commands.cfg
+import os
 
-verify_runnable "global"
+pid = os.getpid()
 
-default_cleanup
+TESTFILE="testfile."+str(pid)
+HOLES_FILESIZE= "671088" # 64 Mb
+HOLES_BLKSIZE="4096"
+HOLES_SEED= "" 
+HOLES_FILEOFFSET= ""
+HOLES_COUNT= "1630"	   # FILESIZE/BLKSIZE/8
+STF_TIMEOUT=3600
