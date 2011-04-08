@@ -376,7 +376,6 @@ def verify_filesys(pool, filesys, dirs):
         log_must([[ZPOOL, "import", pool]])
 
     (out, ret) = cmdExecute([[ZDB, "-cudi", filesys, ">", zdbout, "2>&1"]])
-    print out
     if ret != 0:
         log_note("Output: zdb -cudi "+filesys)
         cmdExecute([[CAT, zdbout]])
