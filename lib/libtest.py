@@ -27,12 +27,14 @@ def default_setup_noexit(disk_l):
    else: 
       print "pool does not exist" 
    
-   disk_zp = [ZPOOL,"create","-f",TESTPOOL]
+#   disk_zp = [ZPOOL,"create","-f",TESTPOOL]
    
-   for disk in disk_l :
-       disk_zp.append(disk)
+#   for disk in disk_l :
+#       disk_zp.append(disk)
 
-   log_must([disk_zp])
+#   log_must([disk_zp])
+
+   log_must([[ZPOOL,"create","-f",TESTPOOL,disk_l]])
 
    (out, ret) = cmdExecute([[RM,"-rf",TESTDIR]])
    if ret != 0:
@@ -60,6 +62,30 @@ def default_setup_noexit(disk_l):
       container = "false"
    return 0 
 
+# Return 0 if create successfully or the pool exists; $? otherwise
+# Note: In local zones, this function should return 0 silently.
+#
+# TESTPOOL -  pool name
+# disk_l - [keyword] devs_list
+
+
+def create_pool(TESTPOOL,disk_l):
+    if TESTPOOL == "":
+       log_note("Missing pool name.")
+       return 1
+    if poolexists(TESTPOOL) == SUCCESS:
+      print "pool exist",TESTPOOL
+      destroy_pool(TESTPOOL)
+
+#    disk_zp = [ZPOOL,"create","-f",TESTPOOL]
+
+#    for disk in disk_l :
+#       disk_zp.append(disk)
+
+#    log_must([disk_zp])
+
+    log_must([[ZPOOL,"create","-f",TESTPOOL,disk_l]])
+    return 0
 
 
 def default_container_cleanup():
@@ -141,13 +167,13 @@ def ismounted(testfs):
            (file_system_mount, ret) = cmdExecute([[ZFS,"mount"],[AWK,"{print $2}"]])
         else:
           (file_system_mount, ret) = cmdExecute([[ZFS,"mount"],[AWK,"{print $1}"]])
-        print "ret",ret,"file_system_mount",file_system_mount
+    #    print "ret",ret,"file_system_mount",file_system_mount
 	file_system_mount = file_system_mount.split('\n')
         file_system_mount.remove("")
         no_of_file_system_mount = len(file_system_mount)
         i = no_of_file_system_mount - 1
         while i >= 0:
-          print "file=",file_system_mount[i],"testfs",testfs
+     #     print "file=",file_system_mount[i],"testfs",testfs
           if file_system_mount[i] == testfs:
             return 0
           i = i-1
