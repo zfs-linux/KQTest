@@ -1,3 +1,4 @@
+##!/usr/bin/python
 #
 # CDDL HEADER START
 #
@@ -27,8 +28,13 @@
 #
 
 import os
+import sys
 
-FILE_WRITE="../../../bin/file_write"
+sys.path.append("../../../../lib")
+PATH = os.getcwd()
+
+PATH = PATH.rpartition("tests")
+FILE_WRITE = PATH[0] + "/bin/file_write"
 
 TESTCTR="testctr"
 TESTFILE0="testfile0."+str(os.getpid())
