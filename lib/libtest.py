@@ -381,8 +381,7 @@ def get_device_dir(device) :
         device = device.rpartition("/")[0] + "/"
         return (device)	
     else:
-        pass 
-        #return ("/dev/")
+        return ("/dev/")
         
 def verify_filesys(pool, filesys, dirs):
     pid = os.getpid()
