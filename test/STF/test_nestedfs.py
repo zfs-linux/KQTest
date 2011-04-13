@@ -12,18 +12,18 @@ class test_nestedfs(unittest.TestCase):
         self.d1 = self.host.getDisk()
         disk = self.d1[0].diskname
         (newenv, path) = lib.STFwrap.setupEnv()
-        (ret, stdout, stderr) = cmdQuery([path + "/nestedfs/setup.ksh" , disk], env=newenv, cwd=path+"/nestedfs")
+        (ret, stdout, stderr) = cmdQuery([path + "/nestedfs/setup.py" , disk], env=newenv, cwd=path+"/nestedfs")
         self.assertEqual(ret, 0, "setup failed")
         self.assertNotIn("ERROR:", stdout, "setup failed")
         self.assertNotIn("ERROR:", stderr, "setup failed")
         
     def cleanup(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        cmdQuery([path + "/nestedfs/cleanup.ksh"], env=newenv, cwd=path+"/nestedfs")
+        cmdQuery([path + "/nestedfs/cleanup.py"], env=newenv, cwd=path+"/nestedfs")
 
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        (ret, stdout, stderr) = cmdQuery([path + "/nestedfs/cleanup.ksh"], env=newenv, cwd=path+"/nestedfs")
+        (ret, stdout, stderr) = cmdQuery([path + "/nestedfs/cleanup.py"], env=newenv, cwd=path+"/nestedfs")
         self.assertNotIn("ERROR:", stdout, "setup failed")
         self.assertNotIn("ERROR:", stderr, "setup failed")
         self.cleanup()
@@ -32,5 +32,5 @@ class test_nestedfs(unittest.TestCase):
         getResources().putHost(self.host)
 
     def test_nestedfs_001_pos(self):
-        lib.STFwrap.runScript(self, "/nestedfs/nestedfs_001_pos.ksh", retcheck=1)
+        lib.STFwrap.runScript(self, "/nestedfs/nestedfs_001_pos.py", retcheck=1)
  
