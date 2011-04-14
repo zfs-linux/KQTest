@@ -32,5 +32,5 @@ class test_nestedfs(unittest.TestCase):
         getResources().putHost(self.host)
 
     def test_nestedfs_001_pos(self):
-        lib.STFwrap.runScript(self, "/nestedfs/nestedfs_001_pos.py", retcheck=1)
+        lib.STFwrap.runScript(self, "/nestedfs/nestedfs_001_pos.py")
  
