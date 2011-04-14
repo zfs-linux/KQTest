@@ -1,47 +1,34 @@
-#!/usr/bin/python  
+#!/usr/bin/python
+
+#copyright (c) 2010 Knowledge Quest Infotech Pvt. Ltd.
+# Produced at Knowledge Quest Infotech Pvt. Ltd.
+# Written by: Knowledge Quest Infotech Pvt. Ltd.
+#             zfs@kqinfotech.com
 #
-# CDDL HEADER START
+# This software is NOT free to use and you cannot redistribute it
+# and/or modify it. You should be possesion of this software only with
+# the explicit consent of the original copyright holder.
 #
-# The contents of this file are subject to the terms of the
-# Common Development and Distribution License (the "License").
-# You may not use this file except in compliance with the License.
-#
-# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
-# or http://www.opensolaris.org/os/licensing.
-# See the License for the specific language governing permissions
-# and limitations under the License.
-#
-# When distributing Covered Code, include this CDDL HEADER in each
-# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
-# If applicable, add the following below this CDDL HEADER, with the
-# fields enclosed by brackets "[]" replaced with your own identifying
-# information: Portions Copyright [yyyy] [name of copyright owner]
-#
-# CDDL HEADER END
-#
- 
-#
-# Copyright 2009 Sun Microsystems, Inc.  All rights reserved.
-# Use is subject to license terms.
-#
-# ident "@(#)setup.ksh  1.4 09/01/12 SMI"
-#
+# This is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+# License for more details.
 
 import os
 import sys
 sys.path.append("../../../../lib")
 from libtest import *
+from logapi import *
+from all_commands import *
 from common_variable import *
 
-if not os.geteuid() == 0 :
-    sys.exit("\n only root can run this script")
 
-DISK = sys.argv[1:]
 
-for n in DISK:
-    ret = existent_of_disk(n)
-    if ret != 0:
-        sys.exit("\nwrong input " + n)
+if not os.geteuid()==0:
+        sys.exit("\nOnly root can run this script\n")
 
-default_setup(DISK)
+if len(sys.argv) not in [2] :
+        sys.exit("USAGE: ./setup disk")
 
+DISK=sys.argv
+default_setup(DISK[1])

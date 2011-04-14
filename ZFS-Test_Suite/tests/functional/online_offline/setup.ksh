@@ -35,7 +35,7 @@ echo $STF_SUITE
 . $STF_SUITE/include/libtest.kshlib
 . $STF_SUITE/include/default_common_varible.kshlib
 . $STF_TOOLS/contrib/include/logapi.kshlib
-. $STF_SUITE/tests/functional/no_space/enospc.cfg
+. $STF_SUITE/tests/functional/online_offline/online_offline.cfg
 
 verify_runnable "global"
 
