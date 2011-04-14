@@ -7,19 +7,15 @@ from logapi import *
 from common_variable import *
 from all_commands import *
 
-global container
 volume = "false"
 
-def default_setup(disk_l):
-   default_setup_noexit(disk_l)
+def default_setup(disk_l, container = "false"):
+   default_setup_noexit(disk_l, container)
 
 def default_container_setup(disk_l):
-    global container     # Needed to modify global copy of container 
-    container = "true"
-    default_setup_noexit(disk_l)
+    default_setup(disk_l, "true")
 
-def default_setup_noexit(disk_l):
-   container = "false"
+def default_setup_noexit(disk_l, container):
 
    if poolexists(TESTPOOL) == SUCCESS:
       print "pool exist",TESTPOOL
@@ -59,7 +55,6 @@ def default_setup_noexit(disk_l):
       log_must([[ZFS,"create",TESTPOOL+"/"+TESTCTR+"/"+TESTFS1]])
       log_must([[ZFS,"set","mountpoint="+TESTDIR1,TESTPOOL+"/"+TESTCTR+"/"+TESTFS1]])
 
-      container = "false"
    return 0 
 
 # Return 0 if create successfully or the pool exists; $? otherwise
