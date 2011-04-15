@@ -28,7 +28,7 @@ if len(sys.argv) == 2:
    DISK = sys.argv[1]
    ret = existent_of_disk(DISK)
    if ret == 0 :
-     default_setup_noexit(DISK)
+     default_setup(DISK)
    else :
      sys.exit("\n Wrong Input..\n")
 else :
