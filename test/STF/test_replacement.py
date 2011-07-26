@@ -21,7 +21,7 @@ class test_replacement(unittest.TestCase):
 
     def tearDown(self):
         (newenv, path) = lib.STFwrap.setupEnv()
-        cmdQuery([path + "/replacement/cleanup.ksh"], env=newenv, cwd=path+"/replacement")
+        cmdQuery([path + "/replacement/cleanup.py"], env=newenv, cwd=path+"/replacement")
         self.host.putDisk(self.d1)
         getResources().cleanup()
         getResources().putHost(self.host)

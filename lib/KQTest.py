@@ -31,10 +31,10 @@ buildDir = None
 # list of modules that need to be loaded
 moduleLoadList = ["/spl/module/spl/spl.ko", "/spl/module/splat/splat.ko", "/zfs/module/avl/zavl.ko",
               "/zfs/module/nvpair/znvpair.ko", "/zfs/module/unicode/zunicode.ko",
-              "/zfs/module/zcommon/zcommon.ko", "/zfs/module/zfs/zfs.ko", "/lzfs/module/lzfs.ko"]
+              "/zfs/module/zcommon/zcommon.ko", "/zfs/module/zfs/zfs.ko"]
 
 # while unloading you don't need the entire path name just the module name
-moduleUnloadList = ["lzfs", "zfs", "zunicode", "zcommon", "zavl", "znvpair", "splat", "spl"]
+moduleUnloadList = ["zfs", "zunicode", "zcommon", "zavl", "znvpair", "splat", "spl"]
 
 # per Thread local store
 threadLocal = threading.local()
@@ -59,7 +59,7 @@ cmdlist = {"awk":"AWK",
            "chown":"CHOWN",
            "cksum":"CKSUM",
            "cmp":"CMP",
-           "uncompress":"UNCOMPRESS",
+           #"uncompress":"UNCOMPRESS",
            "cp":"CP",
 	   "cpio":"CPIO",
 	   "cut":"CUT",

@@ -1,4 +1,4 @@
-#!/bin/ksh -p
+#!/usr/bin/python
 #
 # CDDL HEADER START
 #
@@ -24,24 +24,13 @@
 # Copyright 2009 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-# ident	"@(#)setup.ksh	1.3	09/05/19 SMI"
-#
+# ident	"@(#)cleanup.ksh	1.3	09/06/22 SMI"
+# 
 
-. ${STF_SUITE}/include/libtest.kshlib
-. $STF_SUITE/include/default_common_varible.kshlib 
-. $STF_SUITE/tests/functional/replacement/replacement.cfg
-. $STF_SUITE/commands.cfg
+import os
+import sys
+sys.path.append("../../../../lib")
+from libtest import *
+from common_variable import *
 
-verify_runnable "global"
-
-index=`expr $RANDOM % 2`
-case $index in
-0)	log_note "Pool Type: Mirror"
-	default_mirror_setup  $@
-	;;
-1)	log_note "Pool Type: RAID-Z"
-	default_raidz_setup $@
-	;;
-esac
-
-log_pass
+default_cleanup()
